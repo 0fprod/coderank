@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    platform: postgres
+    url: jdbc:mysql://192.168.99.100:32775/coderankdb?useSSL=false
+    username: root
+    password: root    
