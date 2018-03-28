@@ -1,0 +1,16 @@
+server:
+  port: 2030
+  
+spring:
+  datasource:
+    url: jdbc:postgresql://192.168.99.100:32777/coderankdb?useSSL=false
+    username: admin
+    password : admin
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
