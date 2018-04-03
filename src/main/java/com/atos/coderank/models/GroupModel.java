@@ -54,4 +54,10 @@ public class GroupModel {
 		this.project = project;
 	}
 
+	@Override
+	public String toString() {
+		return "GroupModel [groupId=" + groupId + ", name=" + name + ", description=" + description + ", users=" + users
+				+ ", project=" + project + "]";
+	}
+
 }

@@ -1,13 +1,9 @@
 package com.atos.coderank.models;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-public class UserModel implements UserDetails {
+public class UserModel {
 
 	private String das;
 	private String name;
@@ -21,7 +17,6 @@ public class UserModel implements UserDetails {
 	private List<GroupModel> groups;
 	private RoleModel role;
 	private List<BadgesModel> badges;
-	private String token;
 
 	public UserModel() {
 
@@ -83,19 +78,6 @@ public class UserModel implements UserDetails {
 		this.lockedDate = lockedDate;
 	}
 
-
-	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
-	}
-
-	public Boolean isLocked() {
-		return locked;
-	}
-
-	public void setLocked(Boolean locked) {
-		this.locked = locked;
-	}
-
 	public List<GroupModel> getGroups() {
 		return groups;
 	}
@@ -120,51 +102,27 @@ public class UserModel implements UserDetails {
 		this.badges = badges;
 	}
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return this.das;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-
 	public Boolean getEnabled() {
-		return this.enabled;
+		return enabled;
 	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public Boolean getLocked() {
+		return locked;
+	}
+
+	public void setLocked(Boolean locked) {
+		this.locked = locked;
+	}
+
+	@Override
+	public String toString() {
+		return "UserModel [das=" + das + ", name=" + name + ", email=" + email + ", createdDate=" + createdDate
+				+ ", lockedDate=" + lockedDate + ", enabled=" + enabled + ", locked=" + locked + ", role=" + role + "]";
+	}
+
+	
 }

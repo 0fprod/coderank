@@ -26,8 +26,8 @@ import com.atos.coderank.models.UserModel;
 @Component("sonarUtils")
 public class SonarUtils {
 
-	private static final String SONAR_API = "http://192.168.99.100:32769/api/";
-	private static final String SONAR_URL = "http://192.168.99.100:32769/dashboard";
+	private static final String SONAR_API = "http://192.168.99.100:32768/api/";
+	private static final String SONAR_URL = "http://192.168.99.100:32768/dashboard";
 
 	/**
 	 * GET /user_groups/search

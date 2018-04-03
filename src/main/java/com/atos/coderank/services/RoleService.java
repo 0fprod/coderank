@@ -48,4 +48,9 @@ public class RoleService {
 		RoleEntity re = this.rr.findByName(name);
 		return this.rc.entity2model(re);
 	}
+	
+	public RoleModel saveOrUpdate(RoleModel role) {
+		RoleEntity re = this.rc.model2entity(role);		
+		return this.rc.entity2model(this.rr.saveAndFlush(re));
+	}
 }

@@ -31,8 +31,8 @@ public class UserConverter {
 		ue.setPhoto(user.getPhoto());
 		ue.setCreatedDate(user.getCreatedDate());
 		ue.setLockedDate(user.getLockedDate());
-		ue.setEnabled(user.isEnabled());
-		ue.setLocked(user.isLocked());
+		ue.setEnabled(user.getEnabled());
+		ue.setLocked(user.getLocked());
 		ue.setGroups((include_groups) ? this.gc.modelList2entityList(user.getGroups(), include_groups) : null);
 		ue.setRole(rc.model2entity(user.getRole()));
 		// TODO badges

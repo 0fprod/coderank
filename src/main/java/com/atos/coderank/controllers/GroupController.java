@@ -1,6 +1,5 @@
 package com.atos.coderank.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.atos.coderank.components.SonarUtils;
 import com.atos.coderank.models.GroupModel;
 import com.atos.coderank.services.GroupService;
 
@@ -26,10 +24,7 @@ public class GroupController {
 	@Qualifier("groupService")
 	private GroupService gs;
 	
-	@Autowired
-	@Qualifier("sonarUtils")
-	private SonarUtils su;
-	
+		
 	@GetMapping("")
 	public ResponseEntity<List<GroupModel>> findAll(){
 		List<GroupModel> list = this.gs.findAll();		
@@ -55,15 +50,5 @@ public class GroupController {
 		return new ResponseEntity<>(gm, HttpStatus.OK);
 	}
 
-	@GetMapping("/sonar-groups")
-	public ResponseEntity<List<GroupModel>> syncrhonizeGroupsFromSonar(){
-		List<GroupModel> list = this.su.findAllGroups();
-		List<GroupModel> saved = new ArrayList<>();
-		
-		for(GroupModel group : list) {
-			saved.add(this.gs.saveOrUpdate(group));
-		}
-		
-		return new ResponseEntity<>(saved, HttpStatus.OK);
-	}
+
 }

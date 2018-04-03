@@ -8,6 +8,10 @@ public class RoleModel {
 	public RoleModel() {
 
 	}
+	
+	public RoleModel(String name) {
+		this.name = name;
+	}
 
 	public Long getRoleId() {
 		return roleId;
@@ -23,6 +27,11 @@ public class RoleModel {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "RoleModel [roleId=" + roleId + ", name=" + name + "]";
 	}
 
 
