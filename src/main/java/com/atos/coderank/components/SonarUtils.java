@@ -16,8 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.atos.coderank.models.GroupModel;
-import com.atos.coderank.models.UserModel;
+import com.atos.coderank.entities.GroupEntity;
+import com.atos.coderank.entities.ProjectEntity;
+import com.atos.coderank.entities.UserEntity;
 
 /**
  * 
@@ -32,10 +33,10 @@ public class SonarUtils {
 	/**
 	 * GET /user_groups/search
 	 */
-	public List<GroupModel> findAllGroups() {
+	public List<GroupEntity> findAllGroups() {
 		RestTemplate rt = new RestTemplate();
 		String url = SONAR_API + "/user_groups/search";
-		List<GroupModel> list = new ArrayList<>();
+		List<GroupEntity> list = new ArrayList<>();
 
 		try {
 			ResponseEntity<String> response = rt.exchange(url, HttpMethod.GET, new HttpEntity<String>(getHeaders()),
@@ -46,7 +47,7 @@ public class SonarUtils {
 
 			for (int i = 0; i < jsongroups.length(); i++) {
 				JSONObject jsongroup = jsongroups.getJSONObject(i);
-				GroupModel group = new GroupModel();
+				GroupEntity group = new GroupEntity();
 				group.setName(jsongroup.getString("name"));
 				group.setDescription(jsongroup.getString("description"));
 				list.add(group);
@@ -76,10 +77,10 @@ public class SonarUtils {
 	 * 
 	 * @return
 	 */
-	public List<UserModel> findAllUsers() {
+	public List<UserEntity> findAllUsers() {
 		RestTemplate rt = new RestTemplate();
 		String url = SONAR_API + "/users/search";
-		List<UserModel> list = new ArrayList<>();
+		List<UserEntity> list = new ArrayList<>();
 
 		try {
 			ResponseEntity<String> response = rt.exchange(url, HttpMethod.GET, new HttpEntity<String>(getHeaders()),
@@ -90,16 +91,16 @@ public class SonarUtils {
 
 			for (int i = 0; i < jsonUsers.length(); i++) {
 				JSONObject jsonUser = jsonUsers.getJSONObject(i);
-				UserModel user = new UserModel();
+				UserEntity user = new UserEntity();
 				user.setDas(jsonUser.getString("login").toUpperCase());
 				user.setName(jsonUser.getString("name"));
 				user.setEmail(jsonUser.getString("email"));
-				List<GroupModel> groups = new ArrayList<>();
+				List<GroupEntity> groups = new ArrayList<>();
 				JSONArray jsonGroups = jsonUser.getJSONArray("groups");
 
 				for (int k = 0; k < jsonGroups.length(); k++) {
 					String jsonGroup = jsonGroups.getString(k);
-					GroupModel group = new GroupModel();
+					GroupEntity group = new GroupEntity();
 					group.setName(jsonGroup);
 					groups.add(group);
 				}
@@ -130,13 +131,42 @@ public class SonarUtils {
 	/**
 	 * GET /projects/search
 	 */
-	public void findAllProjects() {
+	public List<ProjectEntity> findAllProjects() {
+		RestTemplate rt = new RestTemplate();
+		String url = SONAR_API + "/projects/search";
+		List<ProjectEntity> list = new ArrayList<>();
+		
+		try {
+			ResponseEntity<String> response = rt.exchange(url, HttpMethod.GET, new HttpEntity<String>(getHeaders()),
+					String.class);
+
+			JSONObject jsonResponse = new JSONObject(response.getBody());
+			JSONArray jsonProjects = jsonResponse.getJSONArray("components");
+			
+			for(int i = 0; i < jsonProjects.length(); i++) {
+				JSONObject jsonProject = jsonProjects.getJSONObject(i);
+				ProjectEntity project = new ProjectEntity();
+				
+				project.setProjectId(jsonProject.getString("id"));	
+				project.setName(jsonProject.getString("name"));
+				project.setKey(jsonProject.getString("key"));
+				project.setUrl(SONAR_URL + "?id=" + project.getKey());
+				list.add(project);
+			}
+		
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}	
+		return list;
 	}
 
 	/**
+	 * ProjectKey convention -> groupname:projectname
 	 * GET /projects/search?projects={project-key}
 	 */
-	public void findOneProject() {
+	public ProjectEntity findOneProject(String key) {
+		return null;
 	}
 
 	public void createProject() {

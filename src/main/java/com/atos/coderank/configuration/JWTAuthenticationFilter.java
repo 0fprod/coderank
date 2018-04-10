@@ -27,6 +27,11 @@ import static com.atos.coderank.configuration.SecurityConstants.HEADER_STRING;
 import static com.atos.coderank.configuration.SecurityConstants.SECRET;
 import static com.atos.coderank.configuration.SecurityConstants.TOKEN_PREFIX;
 
+/**
+ * Following: https://auth0.com/blog/implementing-jwt-authentication-on-spring-boot/?utm_source=medium&utm_medium=sc&utm_campaign=spring_boot_api
+ * @author A679647
+ *
+ */
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	private AuthenticationManager authenticationManager;

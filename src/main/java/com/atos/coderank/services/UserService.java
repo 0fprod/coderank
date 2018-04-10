@@ -8,71 +8,62 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.atos.coderank.components.RoleConverter;
-import com.atos.coderank.components.UserConverter;
 import com.atos.coderank.entities.UserEntity;
-import com.atos.coderank.models.UserModel;
 import com.atos.coderank.repositories.UserRepository;
 
 @Service("userService")
-public class UserService{
+public class UserService {
 
 	@Autowired
 	@Qualifier("userRepository")
 	private UserRepository ur;
-	
+
 	@Autowired
-	@Qualifier("userConverter")
-	private UserConverter uc;
-	
-	@Autowired
-	@Qualifier("roleConverter")
-	private RoleConverter rc;
-	
+	@Qualifier("roleService")
+	private RoleService rs;
+
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-		
-	public UserModel findByDas(String das) {
+
+	public UserEntity findByDas(String das) {
 		UserEntity user = ur.findByDasIgnoreCase(das);
-		return this.uc.entity2model(user, true);
+		return user;
 	}
 
-	public UserModel saveOrUpdate(UserModel user) {
+	public UserEntity saveOrUpdate(UserEntity user) {
 		UserEntity ue = this.ur.findByDasIgnoreCase(user.getDas());
-		UserModel updatedUser = new UserModel();
-		
-		if(null == ue) { //Es un usuario nuevo
-			//Valores por defecto
-			ue = this.uc.model2entity(user, false);
+
+		if (null == ue) { // Es un usuario nuevo
+			// NotNull info
+			ue = new UserEntity();
+			ue.setDas(user.getDas());
+			ue.setName(user.getName());
+			ue.setEmail(user.getEmail());
+			// DefaultInfo
+			ue.setRole(this.rs.findByName("ROLE_DEV"));
 			ue.setPassword(this.passwordEncoder.encode("eqalizer0"));
-			ue.setPhoto(user.getPhoto()); //TODO Default image
+			ue.setPhoto(user.getPhoto()); // TODO Default image
 			ue.setCreatedDate(new Date());
 			ue.setEnabled(false);
-			ue.setLocked(false);			
+			ue.setLocked(false);
 		} else {
-			//Editar usuario
+			// Editar usuario
 			ue.setPassword(user.getPassword() == null ? ue.getPassword() : user.getPassword());
 			ue.setName(user.getName() == null ? ue.getName() : user.getName());
 			ue.setEmail(user.getEmail() == null ? ue.getEmail() : user.getEmail());
 			ue.setPhoto(user.getPhoto() == null ? ue.getPhoto() : user.getPhoto());
 			ue.setCreatedDate(user.getCreatedDate() == null ? ue.getCreatedDate() : user.getCreatedDate());
 			ue.setLockedDate(user.getLockedDate() == null ? ue.getLockedDate() : user.getLockedDate());
-			ue.setEnabled(user.getEnabled() == null ? ue.isEnabled() : user.getEnabled());
-			ue.setLocked(user.getLocked() == null ? ue.isLocked() : user.getLocked());
-			ue.setRole(user.getRole() == null ? ue.getRole() : this.rc.model2entity(user.getRole()));
+			ue.setEnabled(user.isEnabled() == null ? ue.isEnabled() : user.isEnabled());
+			ue.setLocked(user.isLocked() == null ? ue.isLocked() : user.isLocked());
+			ue.setRole(user.getRole() == null ? ue.getRole() : user.getRole());
 		}
-		
-		updatedUser = this.uc.entity2model(this.ur.saveAndFlush(ue), false);
 
-		return updatedUser;
+		return this.ur.saveAndFlush(ue);
 	}
 
-	public List<UserModel> findAll() {
-		List<UserEntity> list = this.ur.findAll();				
-		return this.uc.entityList2modelList(list, false);
+	public List<UserEntity> findAll() {
+		return this.ur.findAll();
 	}
-
-
-
 
 }

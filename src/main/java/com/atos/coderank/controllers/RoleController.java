@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.atos.coderank.models.RoleModel;
+import com.atos.coderank.entities.RoleEntity;
 import com.atos.coderank.services.RoleService;
 
 @RestController
@@ -23,9 +23,9 @@ public class RoleController {
 	private RoleService rs;
 
 	@GetMapping("/{id}")
-	public ResponseEntity<RoleModel> findRole(@PathVariable String id) {
+	public ResponseEntity<RoleEntity> findRole(@PathVariable String id) {
 		Long role_id = Long.parseLong(id);
-		RoleModel rm = this.rs.findById(role_id);
+		RoleEntity rm = this.rs.findById(role_id);
 		HttpStatus status = HttpStatus.OK;
 
 		if (null == rm)
@@ -35,9 +35,9 @@ public class RoleController {
 	}
 
 	@GetMapping("")
-	public ResponseEntity<List<RoleModel>> findAll() {
+	public ResponseEntity<List<RoleEntity>> findAll() {
 
-		List<RoleModel> rml = this.rs.findAll();
+		List<RoleEntity> rml = this.rs.findAll();
 
 		return new ResponseEntity<>(rml, HttpStatus.OK);
 	}

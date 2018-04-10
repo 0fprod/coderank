@@ -1,6 +1,8 @@
 package com.atos.coderank.entities;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,10 +16,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "GROUPS")
-public class GroupEntity {
+public class GroupEntity implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_GROUP")
@@ -36,11 +42,15 @@ public class GroupEntity {
 			@JoinColumn(name = "USER_DAS") })
 	private List<UserEntity> users;
 
+	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY, orphanRemoval = false)
 	@JoinTable(name = "GROUP_PROJECTS", joinColumns = { @JoinColumn(name = "GROUP_ID") }, inverseJoinColumns = {
 			@JoinColumn(name = "PROJECT_ID") })
 	private ProjectEntity project;
 
+	@Transient
+	private Map<String, String> projectName;
+	
 	public GroupEntity(String name, String description) {
 		this.name = name;
 		this.description = description;
@@ -154,6 +164,14 @@ public class GroupEntity {
 
 	public void setProject(ProjectEntity project) {
 		this.project = project;
+	}
+
+	public Map<String, String>getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(Map<String, String> projectName) {
+		this.projectName = projectName;
 	}
 
 }

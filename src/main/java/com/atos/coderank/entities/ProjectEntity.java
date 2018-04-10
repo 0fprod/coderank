@@ -19,7 +19,7 @@ import javax.persistence.Table;
 public class ProjectEntity {
 
 	@Id
-	@Column(name = "PROJECT_ID")
+	@Column(name = "PROJECT_ID", nullable = false)
 	private String projectId;
 
 	@Column(name = "KEY")
@@ -35,7 +35,7 @@ public class ProjectEntity {
 	private byte[] logo;
 
 	@Column(name = "LOCKED")
-	private boolean locked;
+	private Boolean locked;
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -62,7 +62,7 @@ public class ProjectEntity {
 
 	}
 
-	public ProjectEntity(String projectId, String key, String name, String url, byte[] logo, boolean locked,
+	public ProjectEntity(String projectId, String key, String name, String url, byte[] logo, Boolean locked,
 			Date createddate, Date lockeddate) {
 		super();
 		this.projectId = projectId;
@@ -240,27 +240,27 @@ public class ProjectEntity {
 		this.logo = logo;
 	}
 
-	public boolean isLocked() {
+	public Boolean isLocked() {
 		return locked;
 	}
 
-	public void setLocked(boolean locked) {
+	public void setLocked(Boolean locked) {
 		this.locked = locked;
 	}
 
-	public Date getCreateddate() {
+	public Date getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreateddate(Date createddate) {
+	public void setCreatedDate(Date createddate) {
 		this.createdDate = createddate;
 	}
 
-	public Date getLockeddate() {
+	public Date getLockedDate() {
 		return lockedDate;
 	}
 
-	public void setLockeddate(Date lockeddate) {
+	public void setLockedDate(Date lockeddate) {
 		this.lockedDate = lockeddate;
 	}
 

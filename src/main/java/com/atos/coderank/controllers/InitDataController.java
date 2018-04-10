@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.atos.coderank.components.SonarUtils;
-import com.atos.coderank.models.GroupModel;
-import com.atos.coderank.models.RoleModel;
-import com.atos.coderank.models.UserModel;
+import com.atos.coderank.entities.GroupEntity;
+import com.atos.coderank.entities.ProjectEntity;
+import com.atos.coderank.entities.RoleEntity;
+import com.atos.coderank.entities.UserEntity;
 import com.atos.coderank.services.GroupService;
+import com.atos.coderank.services.ProjectService;
 import com.atos.coderank.services.RoleService;
 import com.atos.coderank.services.UserService;
 
@@ -39,16 +41,20 @@ public class InitDataController {
 	@Qualifier("roleService")
 	private RoleService rs;
 
+	@Autowired
+	@Qualifier("projectService")
+	private ProjectService ps;
+
 	@GetMapping("/gen-roles")
-	public ResponseEntity<List<RoleModel>> createRoles() {
-		List<RoleModel> list = new ArrayList<>();
+	public ResponseEntity<List<RoleEntity>> createRoles() {
+		List<RoleEntity> list = new ArrayList<>();
 
-		list.add(new RoleModel("ROLE_ADMIN"));
-		list.add(new RoleModel("ROLE_SQM"));
-		list.add(new RoleModel("ROLE_OM"));
-		list.add(new RoleModel("ROLE_DEV"));
+		list.add(new RoleEntity("ROLE_ADMIN"));
+		list.add(new RoleEntity("ROLE_SQM"));
+		list.add(new RoleEntity("ROLE_OM"));
+		list.add(new RoleEntity("ROLE_DEV"));
 
-		for (RoleModel role : list) {
+		for (RoleEntity role : list) {
 			this.rs.saveOrUpdate(role);
 		}
 
@@ -56,11 +62,11 @@ public class InitDataController {
 	}
 
 	@GetMapping("/sonar-groups")
-	public ResponseEntity<List<GroupModel>> syncrhonizeGroupsFromSonar() {
-		List<GroupModel> list = this.su.findAllGroups();
-		List<GroupModel> saved = new ArrayList<>();
+	public ResponseEntity<List<GroupEntity>> syncrhonizeGroupsFromSonar() {
+		List<GroupEntity> list = this.su.findAllGroups();
+		List<GroupEntity> saved = new ArrayList<>();
 
-		for (GroupModel group : list) {
+		for (GroupEntity group : list) {
 			saved.add(this.gs.saveOrUpdate(group));
 		}
 
@@ -68,21 +74,38 @@ public class InitDataController {
 	}
 
 	@GetMapping("/sonar-users")
-	public ResponseEntity<List<UserModel>> syncrhonizeUsersFromSonar() {
-		List<UserModel> list = this.su.findAllUsers();
-		List<UserModel> saved = new ArrayList<>();
+	public ResponseEntity<List<UserEntity>> syncrhonizeUsersFromSonar() {
+		List<UserEntity> list = this.su.findAllUsers();
+		List<UserEntity> saved = new ArrayList<>();
 
-		for (UserModel user : list) {
-			// SetDefault role to Developer
-			RoleModel role = this.rs.findByName("ROLE_DEV");
-			user.setRole(role);			
+		for (UserEntity user : list) {
 			saved.add(this.us.saveOrUpdate(user));
 			// Decirle al grupo que tiene un usuario
-			for (GroupModel group : user.getGroups()) {
-				GroupModel g = this.gs.findByName(group.getName());
+			for (GroupEntity group : user.getGroups()) {
+				GroupEntity g = this.gs.findByName(group.getName());
 				g.getUsers().add(user);
 				this.gs.saveOrUpdate(g);
 			}
+		}
+
+		return new ResponseEntity<>(saved, HttpStatus.OK);
+	}
+
+	@GetMapping("sonar-projects")
+	public ResponseEntity<List<ProjectEntity>> syncrhonizeProjectsFromSonar() {
+		List<ProjectEntity> projects = this.su.findAllProjects();
+		List<ProjectEntity> saved = new ArrayList<>();
+
+		for (ProjectEntity project : projects) {
+			ProjectEntity model = this.ps.saveOrUpdate(project);
+			// Asignarle el grupo
+			String groupname = model.getKey().substring(0, model.getKey().indexOf(':'));
+			GroupEntity gm = this.gs.findByName(groupname);
+			if(null != gm) {
+				gm.setProject(model);
+				this.gs.saveOrUpdate(gm);				
+			}
+			saved.add(model);
 		}
 
 		return new ResponseEntity<>(saved, HttpStatus.OK);

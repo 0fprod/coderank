@@ -19,6 +19,11 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import io.jsonwebtoken.Jwts;
 
+/**
+ * Following: https://auth0.com/blog/implementing-jwt-authentication-on-spring-boot/?utm_source=medium&utm_medium=sc&utm_campaign=spring_boot_api
+ * @author A679647
+ *
+ */
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter{
 
 	public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {

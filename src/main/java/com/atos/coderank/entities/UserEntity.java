@@ -1,20 +1,26 @@
 package com.atos.coderank.entities;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "USERS")
-public class UserEntity {
+public class UserEntity implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "DAS")
@@ -26,6 +32,7 @@ public class UserEntity {
 	@Column(name = "EMAIL")
 	private String email;
 
+	@JsonIgnore
 	@Column(name = "PASSWORD", nullable = false, length = 60)
 	private String password;
 
@@ -44,14 +51,18 @@ public class UserEntity {
 	@Column(name = "LOCKED")
 	private Boolean locked;
 
+	@JsonIgnore
 	@ManyToMany(mappedBy = "users")
 	private List<GroupEntity> groups;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne
 	private RoleEntity role;
 
 	@ManyToMany(mappedBy = "users")
 	private List<BadgesEntity> badges;
+	
+	@Transient
+	private List<Map<String, String>> groupNames;
 
 	public UserEntity() {
 	}
@@ -271,5 +282,15 @@ public class UserEntity {
 	public void setBadges(List<BadgesEntity> badges) {
 		this.badges = badges;
 	}
+
+	public List<Map<String, String>> getGroupNames() {
+		return groupNames;
+	}
+
+	public void setGroupNames(List<Map<String, String>> groupNames) {
+		this.groupNames = groupNames;
+	}
+
+
 
 }
