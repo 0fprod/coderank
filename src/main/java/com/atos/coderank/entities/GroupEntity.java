@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "GROUPS")
-public class GroupEntity implements Serializable{
+public class GroupEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_GROUP")
@@ -49,8 +49,8 @@ public class GroupEntity implements Serializable{
 	private ProjectEntity project;
 
 	@Transient
-	private Map<String, String> projectName;
-	
+	private Map<String, String> serializedProject;
+
 	public GroupEntity(String name, String description) {
 		this.name = name;
 		this.description = description;
@@ -166,12 +166,12 @@ public class GroupEntity implements Serializable{
 		this.project = project;
 	}
 
-	public Map<String, String>getProjectName() {
-		return projectName;
+	public Map<String, String> getSerializedProject() {
+		return serializedProject;
 	}
 
-	public void setProjectName(Map<String, String> projectName) {
-		this.projectName = projectName;
+	public void setSerializedProject(Map<String, String> serializedProject) {
+		this.serializedProject = serializedProject;
 	}
 
 }

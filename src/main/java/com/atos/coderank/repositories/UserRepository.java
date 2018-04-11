@@ -2,6 +2,8 @@ package com.atos.coderank.repositories;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -20,5 +22,8 @@ public interface UserRepository extends JpaRepository<UserEntity, String>{
 	abstract List<UserEntity> findAll();
 	
 	abstract List<UserEntity> findByRole(RoleEntity role);
+
+	@Transactional
+	abstract Integer deleteByDasIgnoreCase(String das);
 	
 }

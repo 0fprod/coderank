@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,10 +30,10 @@ public class GroupController {
 	@GetMapping("")
 	public ResponseEntity<List<GroupEntity>> findAll() {
 		List<GroupEntity> list = this.gs.findAll();
-		
-		for(int i = 0; i < list.size(); i++)
-			list.get(i).setProjectName(projectEntitySerializer(list.get(i)));
-		
+
+		for (int i = 0; i < list.size(); i++)
+			list.get(i).setSerializedProject(projectEntitySerializer(list.get(i)));
+
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
@@ -45,7 +46,7 @@ public class GroupController {
 		if (null == group)
 			status = HttpStatus.NOT_FOUND;
 		else
-			group.setProjectName(projectEntitySerializer(group));
+			group.setSerializedProject(projectEntitySerializer(group));
 
 		return new ResponseEntity<>(group, status);
 	}
@@ -57,17 +58,38 @@ public class GroupController {
 		return new ResponseEntity<>(gm, HttpStatus.OK);
 	}
 
+	@DeleteMapping("/delete")
+	public ResponseEntity<String> delete(@RequestBody GroupEntity group) {
+		String response = "The group with id '" + group.getGroupId() + "' has been deleted.";
+		HttpStatus status = HttpStatus.OK;
+		GroupEntity groupToDelete = this.gs.findByGroupId(group.getGroupId());
+
+		if (null == groupToDelete) {
+			response = "Cannot delete the group with id '" + group.getGroupId() + "'. It doesnt exist.";
+			status = HttpStatus.NOT_FOUND;
+		} else {
+			this.gs.delete(groupToDelete);
+		}
+
+		return new ResponseEntity<>(response, status);
+	}
+
 	/**
 	 * Serializes ProjectEntity
+	 * 
 	 * @param g
 	 * @return
 	 */
 	private Map<String, String> projectEntitySerializer(GroupEntity g) {
 		Map<String, String> map = new HashMap<>();
-		map.put("id", g.getProject().getProjectId());
-		map.put("key", g.getProject().getKey());
-		map.put("url", g.getProject().getUrl());
-		map.put("name", g.getProject().getName());
+
+		if (g.getProject() != null) {
+			map.put("id", g.getProject().getProjectId());
+			map.put("key", g.getProject().getKey());
+			map.put("url", g.getProject().getUrl());
+			map.put("name", g.getProject().getName());
+		}
+
 		return map;
 	}
 

@@ -23,23 +23,21 @@ public class GroupService {
 		if (null == ge) {
 			// Grupo nuevo
 			ge = new GroupEntity();
-			ge.setName(group.getName());
+			ge.setName(group.getName().replaceAll(" ", "-").toLowerCase());
 			ge.setDescription(group.getDescription());
-			ge.setProject(group.getProject() == null ? null : group.getProject()); //Quizas haga falta buscar el ID de proyecto .. depende como venga del frontend
+			ge.setProject(group.getProject() == null ? null : group.getProject()); // Quizas haga falta buscar el ID de
+																					// proyecto .. depende como venga
+																					// del frontend
 
 		} else {
 			// Editar grupo
 			ge.setName(group.getName() == null ? ge.getName() : group.getName());
 			ge.setDescription(group.getDescription() == null ? ge.getDescription() : group.getDescription());
-			ge.setProject(group.getProject() == null ? null : group.getProject());
-			// Add users
-			for (UserEntity user : group.getUsers())
-				ge.addUser(user);
-
+			ge.setProject(group.getProject() == null ? ge.getProject() : group.getProject());
+			ge.setUsers(group.getUsers() == null ? ge.getUsers() : group.getUsers());
 		}
-		ge = this.gr.saveAndFlush(ge);
 
-		return ge;
+		return this.gr.saveAndFlush(ge);
 	}
 
 	public List<GroupEntity> findAll() {
@@ -53,5 +51,9 @@ public class GroupService {
 	public GroupEntity findByName(String name) {
 		return this.gr.findByName(name);
 
+	}
+
+	public void delete(GroupEntity entity) {		
+		this.gr.delete(entity);		
 	}
 }

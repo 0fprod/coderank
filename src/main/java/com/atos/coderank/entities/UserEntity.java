@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "USERS")
-public class UserEntity implements Serializable{
+public class UserEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -60,9 +60,9 @@ public class UserEntity implements Serializable{
 
 	@ManyToMany(mappedBy = "users")
 	private List<BadgesEntity> badges;
-	
+
 	@Transient
-	private List<Map<String, String>> groupNames;
+	private List<Map<String, String>> serialziedGroup;
 
 	public UserEntity() {
 	}
@@ -283,14 +283,12 @@ public class UserEntity implements Serializable{
 		this.badges = badges;
 	}
 
-	public List<Map<String, String>> getGroupNames() {
-		return groupNames;
+	public List<Map<String, String>> getSerialziedGroup() {
+		return serialziedGroup;
 	}
 
-	public void setGroupNames(List<Map<String, String>> groupNames) {
-		this.groupNames = groupNames;
+	public void setSerialziedGroup(List<Map<String, String>> serialziedGroup) {
+		this.serialziedGroup = serialziedGroup;
 	}
-
-
 
 }

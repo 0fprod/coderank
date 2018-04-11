@@ -3,6 +3,7 @@ package com.atos.coderank.entities;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +14,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "PROJECTS")
@@ -32,7 +36,7 @@ public class ProjectEntity {
 	private String url;
 
 	@Column(name = "LOGO")
-	private byte[] logo;
+	private Byte[] logo;
 
 	@Column(name = "LOCKED")
 	private Boolean locked;
@@ -43,6 +47,7 @@ public class ProjectEntity {
 	@Column(name = "LOCKED_DATE")
 	private Date lockedDate;
 
+	@JsonIgnore
 	@OneToOne(mappedBy = "project", fetch = FetchType.LAZY)
 	private GroupEntity group;
 
@@ -58,11 +63,14 @@ public class ProjectEntity {
 	@OneToOne(mappedBy = "project")
 	private RankingEntity ranking;
 
+	@Transient
+	private Map<String, String> serializedGroup;
+
 	public ProjectEntity() {
 
 	}
 
-	public ProjectEntity(String projectId, String key, String name, String url, byte[] logo, Boolean locked,
+	public ProjectEntity(String projectId, String key, String name, String url, Byte[] logo, Boolean locked,
 			Date createddate, Date lockeddate) {
 		super();
 		this.projectId = projectId;
@@ -232,11 +240,11 @@ public class ProjectEntity {
 		this.url = url;
 	}
 
-	public byte[] getLogo() {
+	public Byte[] getLogo() {
 		return logo;
 	}
 
-	public void setLogo(byte[] logo) {
+	public void setLogo(Byte[] logo) {
 		this.logo = logo;
 	}
 
@@ -302,6 +310,14 @@ public class ProjectEntity {
 
 	public void setRanking(RankingEntity ranking) {
 		this.ranking = ranking;
+	}
+
+	public Map<String, String> getSerializedGroup() {
+		return serializedGroup;
+	}
+
+	public void setSerializedGroup(Map<String, String> serializedGroup) {
+		this.serializedGroup = serializedGroup;
 	}
 
 }

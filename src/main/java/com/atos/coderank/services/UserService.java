@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.atos.coderank.components.UtilsComponent;
 import com.atos.coderank.entities.UserEntity;
 import com.atos.coderank.repositories.UserRepository;
 
@@ -24,6 +25,10 @@ public class UserService {
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+	
+	@Autowired
+	@Qualifier("utilsComponent")
+	private UtilsComponent uc;
 
 	public UserEntity findByDas(String das) {
 		UserEntity user = ur.findByDasIgnoreCase(das);
@@ -36,19 +41,19 @@ public class UserService {
 		if (null == ue) { // Es un usuario nuevo
 			// NotNull info
 			ue = new UserEntity();
-			ue.setDas(user.getDas());
+			ue.setDas(user.getDas().toUpperCase());
 			ue.setName(user.getName());
 			ue.setEmail(user.getEmail());
 			// DefaultInfo
 			ue.setRole(this.rs.findByName("ROLE_DEV"));
-			ue.setPassword(this.passwordEncoder.encode("eqalizer0"));
-			ue.setPhoto(user.getPhoto()); // TODO Default image
+			ue.setPassword(this.passwordEncoder.encode("eqalizer0"));			
+			ue.setPhoto(this.uc.loadImage("./src/main/resources/static/images/user_default.png"));				
 			ue.setCreatedDate(new Date());
 			ue.setEnabled(false);
 			ue.setLocked(false);
 		} else {
 			// Editar usuario
-			ue.setPassword(user.getPassword() == null ? ue.getPassword() : user.getPassword());
+			ue.setPassword(user.getPassword() == null ? ue.getPassword() : this.passwordEncoder.encode(user.getPassword()));
 			ue.setName(user.getName() == null ? ue.getName() : user.getName());
 			ue.setEmail(user.getEmail() == null ? ue.getEmail() : user.getEmail());
 			ue.setPhoto(user.getPhoto() == null ? ue.getPhoto() : user.getPhoto());
@@ -66,4 +71,8 @@ public class UserService {
 		return this.ur.findAll();
 	}
 
+	public void deleteUser(UserEntity user) {				
+		this.ur.delete(user);
+	}
+	
 }

@@ -1,8 +1,13 @@
 package com.atos.coderank.controllers;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -12,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.atos.coderank.components.SonarUtils;
+import com.atos.coderank.entities.BadgesEntity;
 import com.atos.coderank.entities.GroupEntity;
 import com.atos.coderank.entities.ProjectEntity;
 import com.atos.coderank.entities.RoleEntity;
 import com.atos.coderank.entities.UserEntity;
+import com.atos.coderank.services.BadgesService;
 import com.atos.coderank.services.GroupService;
 import com.atos.coderank.services.ProjectService;
 import com.atos.coderank.services.RoleService;
@@ -24,6 +31,8 @@ import com.atos.coderank.services.UserService;
 @RestController
 @RequestMapping("/api/private/initialize")
 public class InitDataController {
+
+	private static final Log LOG = LogFactory.getLog(InitDataController.class);
 
 	@Autowired
 	@Qualifier("sonarUtils")
@@ -44,6 +53,10 @@ public class InitDataController {
 	@Autowired
 	@Qualifier("projectService")
 	private ProjectService ps;
+
+	@Autowired
+	@Qualifier("badgesService")
+	private BadgesService bs;
 
 	@GetMapping("/gen-roles")
 	public ResponseEntity<List<RoleEntity>> createRoles() {
@@ -101,13 +114,37 @@ public class InitDataController {
 			// Asignarle el grupo
 			String groupname = model.getKey().substring(0, model.getKey().indexOf(':'));
 			GroupEntity gm = this.gs.findByName(groupname);
-			if(null != gm) {
+			if (null != gm) {
 				gm.setProject(model);
-				this.gs.saveOrUpdate(gm);				
+				this.gs.saveOrUpdate(gm);
 			}
 			saved.add(model);
 		}
 
 		return new ResponseEntity<>(saved, HttpStatus.OK);
+	}
+
+	@GetMapping("gen-badges")
+	public ResponseEntity<List<BadgesEntity>> createBadges() {
+		List<BadgesEntity> list = new ArrayList<>();
+		String basePath = "./src/main/resources/static/images/badges/";
+		File files = new File(basePath);
+		String[] filesInDirectory = files.list();
+
+		for (String file : filesInDirectory) {
+			LOG.info("FileName: " + file);
+			try {
+				File image = new File(basePath + file);
+				BadgesEntity badge = new BadgesEntity();
+				badge.setImage(Files.readAllBytes(image.toPath()));
+				badge.setName(file);
+				list.add(this.bs.saveOrUpdate(badge));
+			} catch (IOException e) {
+				LOG.warn("Cannot create badge " + file);
+				e.printStackTrace();
+			}
+		}
+
+		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 }
