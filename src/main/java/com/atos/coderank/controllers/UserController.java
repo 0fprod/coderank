@@ -1,9 +1,6 @@
 package com.atos.coderank.controllers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.atos.coderank.components.JsonSerializers;
 import com.atos.coderank.entities.BadgesEntity;
 import com.atos.coderank.entities.GroupEntity;
 import com.atos.coderank.entities.UserEntity;
 import com.atos.coderank.services.BadgesService;
 import com.atos.coderank.services.GroupService;
 import com.atos.coderank.services.UserService;
+
 
 @RestController
 @RequestMapping("api/private/users")
@@ -43,6 +42,10 @@ public class UserController {
 	@Autowired
 	@Qualifier("badgesService")
 	private BadgesService bs;
+	
+	@Autowired
+	@Qualifier("jsonSerializers")
+	private JsonSerializers js;
 
 	@GetMapping("/{das}")
 	public ResponseEntity<UserEntity> findUserByDas(@PathVariable String das) {
@@ -52,8 +55,10 @@ public class UserController {
 
 		if (null == user)
 			status = HttpStatus.NOT_FOUND;
-		else
-			user.setSerialziedGroup(groupEntitySerializer(user));
+		else {
+			user.setSerializedGroups(this.js.groupEntitySerializer(user));
+			user.setSerializedBadges(this.js.badgeListSerializer(user));
+		}
 
 		return new ResponseEntity<>(user, status);
 	}
@@ -74,8 +79,10 @@ public class UserController {
 	public ResponseEntity<List<UserEntity>> findAll() {
 		List<UserEntity> users = this.us.findAll();
 
-		for (int i = 0; i < users.size(); i++)
-			users.get(i).setSerialziedGroup(groupEntitySerializer(users.get(i)));
+		for (int i = 0; i < users.size(); i++) {
+			users.get(i).setSerializedGroups(this.js.groupEntitySerializer(users.get(i)));
+			users.get(i).setSerializedBadges(this.js.badgeListSerializer(users.get(i)));
+		}
 
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
@@ -108,24 +115,5 @@ public class UserController {
 		return new ResponseEntity<>(response, status);
 	}
 
-	/**
-	 * Serialize GroupEntity to avoid infinite recursion when parsing GroupEntity to
-	 * json
-	 * 
-	 * @param user
-	 * @return
-	 */
-	private List<Map<String, String>> groupEntitySerializer(UserEntity user) {
-		List<Map<String, String>> list = new ArrayList<>();
 
-		if (user.getGroups().size() > 0)
-			for (GroupEntity g : user.getGroups()) {
-				Map<String, String> map = new HashMap<>();
-				map.put("id", g.getGroupId().toString());
-				map.put("name", g.getName());
-				list.add(map);
-			}
-
-		return list;
-	}
 }

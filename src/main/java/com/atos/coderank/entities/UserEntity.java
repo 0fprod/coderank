@@ -37,7 +37,7 @@ public class UserEntity implements Serializable {
 	private String password;
 
 	@Column(name = "PHOTO")
-	private Byte[] photo;
+	private byte[] photo;
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -58,16 +58,20 @@ public class UserEntity implements Serializable {
 	@OneToOne
 	private RoleEntity role;
 
+	@JsonIgnore
 	@ManyToMany(mappedBy = "users")
 	private List<BadgesEntity> badges;
 
 	@Transient
-	private List<Map<String, String>> serialziedGroup;
+	private List<Map<String, String>> serializedGroups;
+	
+	@Transient
+	private List<Map<String, Object>> serializedBadges;
 
 	public UserEntity() {
 	}
 
-	public UserEntity(String das, String name, String surname, String email, String password, Byte[] photo,
+	public UserEntity(String das, String name, String surname, String email, String password, byte[] photo,
 			Date createdDate, Date lockedDate, Boolean enabled, Boolean locked, RoleEntity role) {
 		this.das = das;
 		this.name = name;
@@ -219,11 +223,11 @@ public class UserEntity implements Serializable {
 		this.password = password;
 	}
 
-	public Byte[] getPhoto() {
+	public byte[] getPhoto() {
 		return photo;
 	}
 
-	public void setPhoto(Byte[] photo) {
+	public void setPhoto(byte[] photo) {
 		this.photo = photo;
 	}
 
@@ -283,12 +287,20 @@ public class UserEntity implements Serializable {
 		this.badges = badges;
 	}
 
-	public List<Map<String, String>> getSerialziedGroup() {
-		return serialziedGroup;
+	public List<Map<String, String>> getSerializedGroups() {
+		return serializedGroups;
 	}
 
-	public void setSerialziedGroup(List<Map<String, String>> serialziedGroup) {
-		this.serialziedGroup = serialziedGroup;
+	public void setSerializedGroups(List<Map<String, String>> serialziedGroup) {
+		this.serializedGroups = serialziedGroup;
+	}
+
+	public List<Map<String, Object>> getSerializedBadges() {
+		return serializedBadges;
+	}
+
+	public void setSerializedBadges(List<Map<String, Object>> serializedBadges) {
+		this.serializedBadges = serializedBadges;
 	}
 
 }

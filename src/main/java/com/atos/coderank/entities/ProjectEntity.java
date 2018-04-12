@@ -36,7 +36,7 @@ public class ProjectEntity {
 	private String url;
 
 	@Column(name = "LOGO")
-	private Byte[] logo;
+	private byte[] logo;
 
 	@Column(name = "LOCKED")
 	private Boolean locked;
@@ -70,7 +70,7 @@ public class ProjectEntity {
 
 	}
 
-	public ProjectEntity(String projectId, String key, String name, String url, Byte[] logo, Boolean locked,
+	public ProjectEntity(String projectId, String key, String name, String url, byte[] logo, Boolean locked,
 			Date createddate, Date lockeddate) {
 		super();
 		this.projectId = projectId;
@@ -240,11 +240,11 @@ public class ProjectEntity {
 		this.url = url;
 	}
 
-	public Byte[] getLogo() {
+	public byte[] getLogo() {
 		return logo;
 	}
 
-	public void setLogo(Byte[] logo) {
+	public void setLogo(byte[] logo) {
 		this.logo = logo;
 	}
 

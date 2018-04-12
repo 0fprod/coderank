@@ -1,8 +1,6 @@
 package com.atos.coderank.controllers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.atos.coderank.components.JsonSerializers;
 import com.atos.coderank.entities.GroupEntity;
 import com.atos.coderank.services.GroupService;
 
@@ -26,13 +25,17 @@ public class GroupController {
 	@Autowired
 	@Qualifier("groupService")
 	private GroupService gs;
+	
+	@Autowired
+	@Qualifier("jsonSerializers")
+	private JsonSerializers js;
 
 	@GetMapping("")
 	public ResponseEntity<List<GroupEntity>> findAll() {
 		List<GroupEntity> list = this.gs.findAll();
 
 		for (int i = 0; i < list.size(); i++)
-			list.get(i).setSerializedProject(projectEntitySerializer(list.get(i)));
+			list.get(i).setSerializedProject(this.js.projectEntitySerializer(list.get(i)));
 
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
@@ -46,7 +49,7 @@ public class GroupController {
 		if (null == group)
 			status = HttpStatus.NOT_FOUND;
 		else
-			group.setSerializedProject(projectEntitySerializer(group));
+			group.setSerializedProject(this.js.projectEntitySerializer(group));
 
 		return new ResponseEntity<>(group, status);
 	}
@@ -74,23 +77,6 @@ public class GroupController {
 		return new ResponseEntity<>(response, status);
 	}
 
-	/**
-	 * Serializes ProjectEntity
-	 * 
-	 * @param g
-	 * @return
-	 */
-	private Map<String, String> projectEntitySerializer(GroupEntity g) {
-		Map<String, String> map = new HashMap<>();
 
-		if (g.getProject() != null) {
-			map.put("id", g.getProject().getProjectId());
-			map.put("key", g.getProject().getKey());
-			map.put("url", g.getProject().getUrl());
-			map.put("name", g.getProject().getName());
-		}
-
-		return map;
-	}
 
 }
