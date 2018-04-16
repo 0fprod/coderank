@@ -1,9 +1,6 @@
 package com.atos.coderank.controllers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.atos.coderank.components.JsonSerializers;
 import com.atos.coderank.entities.GroupEntity;
 import com.atos.coderank.entities.ProjectEntity;
-import com.atos.coderank.entities.UserEntity;
 import com.atos.coderank.services.GroupService;
 import com.atos.coderank.services.ProjectService;
 
@@ -35,12 +32,18 @@ public class ProjectController {
 	@Qualifier("groupService")
 	private GroupService gs;
 
+	@Autowired
+	@Qualifier("jsonSerializers")
+	private JsonSerializers js;
+	
 	@GetMapping("")
 	public ResponseEntity<List<ProjectEntity>> findAll() {
 		List<ProjectEntity> list = this.ps.findAll();
 
-		for (int i = 0; i < list.size(); i++)
-			list.get(i).setSerializedGroup(groupEntitySerializer(list.get(i)));
+		for (int i = 0; i < list.size(); i++) {
+			list.get(i).setSerializedGroup(this.js.groupEntitySerializer(list.get(i)));
+			list.get(i).setSerializedBadges(this.js.badgeListSerializer(list.get(i)));
+		}
 
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
@@ -52,8 +55,10 @@ public class ProjectController {
 		
 		if (project == null)
 			status = HttpStatus.NOT_FOUND;
-		else
-			project.setSerializedGroup(groupEntitySerializer(project));
+		else {
+			project.setSerializedGroup(this.js.groupEntitySerializer(project));
+			project.setSerializedBadges(this.js.badgeListSerializer(project));
+		}
 
 		return new ResponseEntity<>(project, status);
 	}
@@ -82,21 +87,5 @@ public class ProjectController {
 		return new ResponseEntity<>(response, status);
 	}
 
-	/**
-	 * Serializes a ProjectEntity
-	 * @param project
-	 * @return
-	 */
-	private Map<String, String> groupEntitySerializer(ProjectEntity project) {
-		Map<String, String> map = new HashMap<>();
 
-		if (project.getGroup() != null) {
-			GroupEntity group = project.getGroup();
-			map.put("id", group.getGroupId().toString());
-			map.put("name", group.getName());
-			map.put("description", group.getDescription());
-		}
-
-		return map;
-	}
 }

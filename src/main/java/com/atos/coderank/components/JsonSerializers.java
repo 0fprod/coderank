@@ -9,16 +9,17 @@ import org.springframework.stereotype.Component;
 
 import com.atos.coderank.entities.BadgesEntity;
 import com.atos.coderank.entities.GroupEntity;
+import com.atos.coderank.entities.ProjectEntity;
 import com.atos.coderank.entities.UserEntity;
 
 @Component("jsonSerializers")
 public class JsonSerializers {
 
 	/**
-	 * Serialize GroupEntity
+	 * Serialize GroupEntity from a given UserEntity
 	 * 
 	 * @param user
-	 * @return
+	 * @return List(Map(id, name))
 	 */
 	public List<Map<String, String>> groupEntitySerializer(UserEntity user) {
 		List<Map<String, String>> list = new ArrayList<>();
@@ -35,10 +36,10 @@ public class JsonSerializers {
 	}
 
 	/**
-	 * Serializes ProjectEntity
+	 * Serializes ProjectEntity from a given GroupEntity
 	 * 
 	 * @param g
-	 * @return
+	 * @return Map(id, key, url, name)
 	 */
 	public Map<String, String> projectEntitySerializer(GroupEntity g) {
 		Map<String, String> map = new HashMap<>();
@@ -54,24 +55,65 @@ public class JsonSerializers {
 	}
 
 	/**
+	 * Serializes a BadgeEntity from a given UserEntity
 	 * 
 	 * @param badges
-	 * @return
+	 * @return List(Map(badgeId, name, img))
 	 */
 	public List<Map<String, Object>> badgeListSerializer(UserEntity user) {
 		List<Map<String, Object>> list = new ArrayList<>();
 		List<BadgesEntity> badges = user.getBadges();
 
-		if(null != badges)
+		if (null != badges)
 			for (BadgesEntity b : badges) {
 				Map<String, Object> map = new HashMap<>();
 				map.put("badgeId", b.getBadgeId());
 				map.put("name", b.getName());
 				map.put("img", b.getImage());
-				list.add(map);				
+				list.add(map);
+			}
+
+		return list;
+	}
+	
+	/**
+	 * Serializes a BadgeEntity from a given ProjectEntity
+	 * 
+	 * @param badges
+	 * @return List(Map(badgeId, name, img))
+	 */
+	public List<Map<String, Object>> badgeListSerializer(ProjectEntity project) {
+		List<Map<String, Object>> list = new ArrayList<>();
+		List<BadgesEntity> badges = project.getBadges();
+
+		if (null != badges)
+			for (BadgesEntity b : badges) {
+				Map<String, Object> map = new HashMap<>();
+				map.put("badgeId", b.getBadgeId());
+				map.put("name", b.getName());
+				map.put("img", b.getImage());
+				list.add(map);
 			}
 
 		return list;
 	}
 
+	/**
+	 * Serializes a GroupEntity from a given ProjectEntity
+	 * 
+	 * @param project
+	 * @return Map(id, name, description)
+	 */
+	public Map<String, String> groupEntitySerializer(ProjectEntity project) {
+		Map<String, String> map = new HashMap<>();
+
+		if (project.getGroup() != null) {
+			GroupEntity group = project.getGroup();
+			map.put("id", group.getGroupId().toString());
+			map.put("name", group.getName());
+			map.put("description", group.getDescription());
+		}
+
+		return map;
+	}
 }

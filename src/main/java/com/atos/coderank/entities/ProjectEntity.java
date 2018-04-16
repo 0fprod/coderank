@@ -57,6 +57,7 @@ public class ProjectEntity {
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	private List<ProjectReportsEntity> reports;
 
+	@JsonIgnore
 	@ManyToMany(mappedBy = "projects")
 	private List<BadgesEntity> badges;
 
@@ -65,6 +66,9 @@ public class ProjectEntity {
 
 	@Transient
 	private Map<String, String> serializedGroup;
+	
+	@Transient
+	private List<Map<String, Object>> serializedBadges;
 
 	public ProjectEntity() {
 
@@ -318,6 +322,14 @@ public class ProjectEntity {
 
 	public void setSerializedGroup(Map<String, String> serializedGroup) {
 		this.serializedGroup = serializedGroup;
+	}
+
+	public List<Map<String, Object>> getSerializedBadges() {
+		return serializedBadges;
+	}
+
+	public void setSerializedBadges(List<Map<String, Object>> serializedBadges) {
+		this.serializedBadges = serializedBadges;
 	}
 
 }

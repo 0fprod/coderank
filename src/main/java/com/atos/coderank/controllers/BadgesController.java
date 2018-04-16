@@ -17,6 +17,7 @@ import com.atos.coderank.entities.BadgesEntity;
 import com.atos.coderank.entities.ProjectEntity;
 import com.atos.coderank.entities.UserEntity;
 import com.atos.coderank.services.BadgesService;
+import com.atos.coderank.services.ProjectService;
 import com.atos.coderank.services.UserService;
 
 @RestController
@@ -30,6 +31,10 @@ public class BadgesController {
 	@Autowired
 	@Qualifier("userService")
 	private UserService us;
+	
+	@Autowired
+	@Qualifier("projectService")
+	private ProjectService ps;
 
 	@GetMapping("")
 	public ResponseEntity<List<BadgesEntity>> findAll() {
@@ -48,7 +53,12 @@ public class BadgesController {
 		return new ResponseEntity<>(entity, status);
 	}
 	
-	@PostMapping("/addbadge")
+	/**
+	 * TODO I'm to sure if this function should go here.
+	 * It recieves a Badge holding an array with (User/Project)Entity to relate them with this badge
+	 * @param badge
+	 * @return
+	 */
 	public ResponseEntity<BadgesEntity> assignBadgeToEntity(@RequestBody BadgesEntity badge){
 		BadgesEntity entity = this.bs.findById(badge.getBadgeId());
 		HttpStatus status = HttpStatus.OK;
@@ -64,12 +74,17 @@ public class BadgesController {
 			
 			//Add projects to this badge
 			if(null != badge.getProject())
-				for (ProjectEntity project : badge.getProject())
+				for (ProjectEntity project : badge.getProject()) {
+					//FindProject
+					project = this.ps.findById(project.getProjectId());
 					entity.addProject(project);
+				}
+					
 			
 			entity = this.bs.saveOrUpdate(entity);
 		}
 
 		return new ResponseEntity<>(entity, status);
 	}
+	
 }
