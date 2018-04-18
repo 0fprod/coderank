@@ -24,7 +24,7 @@ public class JsonSerializers {
 	public List<Map<String, String>> groupEntitySerializer(UserEntity user) {
 		List<Map<String, String>> list = new ArrayList<>();
 
-		if (user.getGroups().size() > 0)
+		if (!user.getGroups().isEmpty())
 			for (GroupEntity g : user.getGroups()) {
 				Map<String, String> map = new HashMap<>();
 				map.put("id", g.getGroupId().toString());

@@ -10,7 +10,7 @@ import com.atos.coderank.entities.RoleEntity;
 @Repository("roleRepository")
 public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
 
-	abstract RoleEntity findByRoleId(Long role_id);
+	abstract RoleEntity findByRoleId(Long roleId);
 	
 	abstract List<RoleEntity> findAll();
 

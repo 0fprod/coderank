@@ -1,6 +1,5 @@
 package com.atos.coderank.entities;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -79,53 +78,7 @@ public class BadgesEntity {
 	public String toString() {
 		return "BadgesEntity [badgeId=" + badgeId + ", name=" + name + ", user=" + users + ", project=" + projects
 				+ "]";
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((badgeId == null) ? 0 : badgeId.hashCode());
-		result = prime * result + Arrays.hashCode(image);
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((projects == null) ? 0 : projects.hashCode());
-		result = prime * result + ((users == null) ? 0 : users.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		BadgesEntity other = (BadgesEntity) obj;
-		if (badgeId == null) {
-			if (other.badgeId != null)
-				return false;
-		} else if (!badgeId.equals(other.badgeId))
-			return false;
-		if (!Arrays.equals(image, other.image))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (projects == null) {
-			if (other.projects != null)
-				return false;
-		} else if (!projects.equals(other.projects))
-			return false;
-		if (users == null) {
-			if (other.users != null)
-				return false;
-		} else if (!users.equals(other.users))
-			return false;
-		return true;
-	}
+	}	
 
 	public Long getBadgeId() {
 		return badgeId;

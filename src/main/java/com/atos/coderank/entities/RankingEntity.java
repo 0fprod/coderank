@@ -49,43 +49,6 @@ public class RankingEntity {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((calification == null) ? 0 : calification.hashCode());
-		result = prime * result + ((project == null) ? 0 : project.hashCode());
-		result = prime * result + ((projectId == null) ? 0 : projectId.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		RankingEntity other = (RankingEntity) obj;
-		if (calification == null) {
-			if (other.calification != null)
-				return false;
-		} else if (!calification.equals(other.calification))
-			return false;
-		if (project == null) {
-			if (other.project != null)
-				return false;
-		} else if (!project.equals(other.project))
-			return false;
-		if (projectId == null) {
-			if (other.projectId != null)
-				return false;
-		} else if (!projectId.equals(other.projectId))
-			return false;
-		return true;
-	}
-
-	@Override
 	public String toString() {
 		return "RankingEntity [calification=" + calification + ", project=" + project + "]";
 	}

@@ -64,7 +64,7 @@ public class UserEntity implements Serializable {
 
 	@Transient
 	private List<Map<String, String>> serializedGroups;
-	
+
 	@Transient
 	private List<Map<String, Object>> serializedBadges;
 
@@ -107,88 +107,6 @@ public class UserEntity implements Serializable {
 		return "UserEntity [das=" + das + ", name=" + name + ", email=" + email + ", password=" + password + ", photo="
 				+ Arrays.toString(photo) + ", createdDate=" + createdDate + ", lockedDate=" + lockedDate + ", enabled="
 				+ enabled + ", locked=" + locked + ", groups=" + groups + ", role=" + role + ", badges=" + badges + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((badges == null) ? 0 : badges.hashCode());
-		result = prime * result + ((createdDate == null) ? 0 : createdDate.hashCode());
-		result = prime * result + ((das == null) ? 0 : das.hashCode());
-		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		result = prime * result + (enabled ? 1231 : 1237);
-		result = prime * result + ((groups == null) ? 0 : groups.hashCode());
-		result = prime * result + (locked ? 1231 : 1237);
-		result = prime * result + ((lockedDate == null) ? 0 : lockedDate.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((password == null) ? 0 : password.hashCode());
-		result = prime * result + Arrays.hashCode(photo);
-		result = prime * result + ((role == null) ? 0 : role.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		UserEntity other = (UserEntity) obj;
-		if (badges == null) {
-			if (other.badges != null)
-				return false;
-		} else if (!badges.equals(other.badges))
-			return false;
-		if (createdDate == null) {
-			if (other.createdDate != null)
-				return false;
-		} else if (!createdDate.equals(other.createdDate))
-			return false;
-		if (das == null) {
-			if (other.das != null)
-				return false;
-		} else if (!das.equals(other.das))
-			return false;
-		if (email == null) {
-			if (other.email != null)
-				return false;
-		} else if (!email.equals(other.email))
-			return false;
-		if (enabled != other.enabled)
-			return false;
-		if (groups == null) {
-			if (other.groups != null)
-				return false;
-		} else if (!groups.equals(other.groups))
-			return false;
-		if (locked != other.locked)
-			return false;
-		if (lockedDate == null) {
-			if (other.lockedDate != null)
-				return false;
-		} else if (!lockedDate.equals(other.lockedDate))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (password == null) {
-			if (other.password != null)
-				return false;
-		} else if (!password.equals(other.password))
-			return false;
-		if (!Arrays.equals(photo, other.photo))
-			return false;
-		if (role == null) {
-			if (other.role != null)
-				return false;
-		} else if (!role.equals(other.role))
-			return false;
-		return true;
 	}
 
 	public String getDas() {

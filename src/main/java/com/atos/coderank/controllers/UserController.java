@@ -69,8 +69,12 @@ public class UserController {
 		UserEntity returnedUser = this.us.saveOrUpdate(user);
 		HttpStatus status = HttpStatus.CREATED;
 
-		if (null != returnedUser)
+		if (null == returnedUser)
 			status = HttpStatus.CONFLICT;
+		else {
+			returnedUser.setSerializedGroups(this.js.groupEntitySerializer(user));
+			returnedUser.setSerializedBadges(this.js.badgeListSerializer(user));
+		}
 
 		return new ResponseEntity<>(returnedUser, status);
 	}

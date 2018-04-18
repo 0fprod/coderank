@@ -1,6 +1,9 @@
 package com.atos.coderank.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,10 +38,24 @@ public class ProjectController {
 	@Autowired
 	@Qualifier("jsonSerializers")
 	private JsonSerializers js;
-	
+
 	@GetMapping("")
-	public ResponseEntity<List<ProjectEntity>> findAll() {
-		List<ProjectEntity> list = this.ps.findAll();
+	public ResponseEntity<List<ProjectEntity>> findAll(HttpServletRequest req) {
+		String groupsId = req.getParameter("groupsid");
+		List<ProjectEntity> list;
+
+		if (groupsId != null) {
+			String[] groupsIds = groupsId.split(",");
+			List<Long> groupsIdsL = new ArrayList<>();
+
+			for (String id : groupsIds)
+				groupsIdsL.add(Long.parseLong(id));
+
+			list = this.ps.findAllByGroupId(groupsIdsL);
+
+		} else {
+			list = this.ps.findAll();
+		}
 
 		for (int i = 0; i < list.size(); i++) {
 			list.get(i).setSerializedGroup(this.js.groupEntitySerializer(list.get(i)));
@@ -49,10 +66,10 @@ public class ProjectController {
 	}
 
 	@GetMapping("/{project_id}")
-	public ResponseEntity<ProjectEntity> findById(@PathVariable String project_id) {
-		ProjectEntity project = this.ps.findById(project_id);
+	public ResponseEntity<ProjectEntity> findById(@PathVariable String projectId) {
+		ProjectEntity project = this.ps.findById(projectId);
 		HttpStatus status = HttpStatus.OK;
-		
+
 		if (project == null)
 			status = HttpStatus.NOT_FOUND;
 		else {
@@ -65,7 +82,17 @@ public class ProjectController {
 
 	@PostMapping("/save")
 	public ResponseEntity<ProjectEntity> saveOrUpdate(@RequestBody ProjectEntity project) {
-		return null;
+		ProjectEntity returnedProject = this.ps.saveOrUpdate(project);
+		HttpStatus status = HttpStatus.OK;
+
+		if (returnedProject == null)
+			status = HttpStatus.CONFLICT;
+		else  {
+			project.setSerializedGroup(this.js.groupEntitySerializer(project));
+			project.setSerializedBadges(this.js.badgeListSerializer(project));
+		}
+		
+		return new ResponseEntity<>(returnedProject, status);
 	}
 
 	@DeleteMapping("/delete")
@@ -86,6 +113,5 @@ public class ProjectController {
 
 		return new ResponseEntity<>(response, status);
 	}
-
 
 }

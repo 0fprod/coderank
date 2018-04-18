@@ -1,6 +1,5 @@
 package com.atos.coderank.entities;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -48,55 +47,6 @@ public class ReportNotificationEntity {
 		this.emailedList = emailedList;
 		this.nextDate = nextDate;
 		this.lastDate = lastDate;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Arrays.hashCode(downloadList);
-		result = prime * result + Arrays.hashCode(emailedList);
-		result = prime * result + ((lastDate == null) ? 0 : lastDate.hashCode());
-		result = prime * result + ((nextDate == null) ? 0 : nextDate.hashCode());
-		result = prime * result + ((notificationId == null) ? 0 : notificationId.hashCode());
-		result = prime * result + ((report == null) ? 0 : report.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ReportNotificationEntity other = (ReportNotificationEntity) obj;
-		if (!Arrays.equals(downloadList, other.downloadList))
-			return false;
-		if (!Arrays.equals(emailedList, other.emailedList))
-			return false;
-		if (lastDate == null) {
-			if (other.lastDate != null)
-				return false;
-		} else if (!lastDate.equals(other.lastDate))
-			return false;
-		if (nextDate == null) {
-			if (other.nextDate != null)
-				return false;
-		} else if (!nextDate.equals(other.nextDate))
-			return false;
-		if (notificationId == null) {
-			if (other.notificationId != null)
-				return false;
-		} else if (!notificationId.equals(other.notificationId))
-			return false;
-		if (report == null) {
-			if (other.report != null)
-				return false;
-		} else if (!report.equals(other.report))
-			return false;
-		return true;
 	}
 
 	@Override

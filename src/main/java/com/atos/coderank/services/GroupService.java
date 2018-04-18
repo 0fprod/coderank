@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.atos.coderank.entities.GroupEntity;
-import com.atos.coderank.entities.UserEntity;
 import com.atos.coderank.repositories.GroupRepository;
 
 @Service("groupService")
@@ -21,7 +20,7 @@ public class GroupService {
 		GroupEntity ge = this.gr.findByGroupId(group.getGroupId());
 
 		if (null == ge) {
-			// Grupo nuevo
+			// New group
 			ge = new GroupEntity();
 			ge.setName(group.getName().replaceAll(" ", "-").toLowerCase());
 			ge.setDescription(group.getDescription());
@@ -30,7 +29,7 @@ public class GroupService {
 																					// del frontend
 
 		} else {
-			// Editar grupo
+			// Edit group
 			ge.setName(group.getName() == null ? ge.getName() : group.getName());
 			ge.setDescription(group.getDescription() == null ? ge.getDescription() : group.getDescription());
 			ge.setProject(group.getProject() == null ? ge.getProject() : group.getProject());
@@ -53,7 +52,7 @@ public class GroupService {
 
 	}
 
-	public void delete(GroupEntity entity) {		
-		this.gr.delete(entity);		
+	public void delete(GroupEntity entity) {
+		this.gr.delete(entity);
 	}
 }

@@ -141,7 +141,8 @@ public class InitDataController {
 				list.add(this.bs.saveOrUpdate(badge));
 			} catch (IOException e) {
 				LOG.warn("Cannot create badge " + file);
-				e.printStackTrace();
+				LOG.error(e.getMessage());
+				
 			}
 		}
 

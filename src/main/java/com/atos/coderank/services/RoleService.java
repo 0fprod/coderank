@@ -16,8 +16,8 @@ public class RoleService {
 	@Qualifier("roleRepository")
 	private RoleRepository rr;
 		
-	public RoleEntity findById(Long role_id) {
-		return this.rr.findByRoleId(role_id);
+	public RoleEntity findById(Long roleId) {
+		return this.rr.findByRoleId(roleId);
 	}
 	
 	public List<RoleEntity> findAll(){		

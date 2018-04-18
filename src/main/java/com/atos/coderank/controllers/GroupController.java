@@ -25,7 +25,7 @@ public class GroupController {
 	@Autowired
 	@Qualifier("groupService")
 	private GroupService gs;
-	
+
 	@Autowired
 	@Qualifier("jsonSerializers")
 	private JsonSerializers js;
@@ -41,8 +41,8 @@ public class GroupController {
 	}
 
 	@GetMapping("/{group_id}")
-	public ResponseEntity<GroupEntity> findByGroupId(@PathVariable String group_id) {
-		Long id = Long.parseLong(group_id);
+	public ResponseEntity<GroupEntity> findByGroupId(@PathVariable String groupid) {
+		Long id = Long.parseLong(groupid);
 		GroupEntity group = this.gs.findByGroupId(id);
 		HttpStatus status = HttpStatus.OK;
 
@@ -57,8 +57,15 @@ public class GroupController {
 	@PostMapping("/save")
 	public ResponseEntity<GroupEntity> saveOrUpdate(@RequestBody GroupEntity group) {
 		GroupEntity gm = this.gs.saveOrUpdate(group);
+		HttpStatus status = HttpStatus.OK;
+		
+		if (null == gm)
+			status = HttpStatus.CONFLICT;
+		else {
+			gm.setSerializedProject(this.js.projectEntitySerializer(group));
+		}
 
-		return new ResponseEntity<>(gm, HttpStatus.OK);
+		return new ResponseEntity<>(gm, status);
 	}
 
 	@DeleteMapping("/delete")
@@ -76,7 +83,5 @@ public class GroupController {
 
 		return new ResponseEntity<>(response, status);
 	}
-
-
 
 }

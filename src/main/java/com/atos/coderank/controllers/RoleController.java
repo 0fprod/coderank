@@ -24,8 +24,8 @@ public class RoleController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<RoleEntity> findRole(@PathVariable String id) {
-		Long role_id = Long.parseLong(id);
-		RoleEntity rm = this.rs.findById(role_id);
+		Long roleId = Long.parseLong(id);
+		RoleEntity rm = this.rs.findById(roleId);
 		HttpStatus status = HttpStatus.OK;
 
 		if (null == rm)

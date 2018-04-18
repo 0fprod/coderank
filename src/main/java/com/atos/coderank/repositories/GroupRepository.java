@@ -10,7 +10,7 @@ import com.atos.coderank.entities.GroupEntity;
 @Repository("groupRepository")
 public interface GroupRepository extends JpaRepository<GroupEntity, Long>{
 
-	abstract GroupEntity findByGroupId(Long group_id);
+	abstract GroupEntity findByGroupId(Long groupId);
 	
 	abstract List<GroupEntity> findAll();
 	
