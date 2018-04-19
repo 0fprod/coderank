@@ -1,6 +1,5 @@
 package com.atos.coderank.entities;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -20,10 +19,9 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "GROUPS")
-public class GroupEntity implements Serializable {
+public class GroupEntity  {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_GROUP")

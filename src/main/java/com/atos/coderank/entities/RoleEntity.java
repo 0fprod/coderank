@@ -1,7 +1,5 @@
 package com.atos.coderank.entities;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,9 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "ROLES")
-public class RoleEntity implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class RoleEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SQ_ROLES")

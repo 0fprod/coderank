@@ -3,6 +3,7 @@ package com.atos.coderank.components;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,6 +21,13 @@ public class UtilsComponent {
 	private static final Log LOG = LogFactory.getLog(UtilsComponent.class);
 
 	/**
+	 * @see <a href=
+	 *      "http://en.wikipedia.org/wiki/ISO_8601#Combined_date_and_time_representations">Combined
+	 *      Date and Time Representations</a>
+	 */
+	public static final String ISO_8601_24H_FULL_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+
+	/**
 	 * Reads a File with the given path and returns it as byte[]
 	 * 
 	 * @param path
@@ -31,10 +39,9 @@ public class UtilsComponent {
 		try {
 			return Files.readAllBytes(file.toPath());
 		} catch (IOException e) {
-			LOG.warn("Error al leer la imagen");
-			e.printStackTrace();
+			LOG.error("Error al leer la imagen - " + e.getMessage());
 		}
-		return null;
+		return new byte[0];
 	}
 
 	/**
@@ -43,16 +50,16 @@ public class UtilsComponent {
 	 * @param arr
 	 * @return
 	 */
-	public String StringArrayToCsv(String[] arr) {
-		String csv = "";
+	public String stringArrayToCsv(String[] arr) {
+		StringBuilder csv = new StringBuilder();
 
 		for (int i = 0; i < arr.length; i++)
 			if (i == arr.length - 1)
-				csv += arr[i];
+				csv.append(arr[i]);
 			else
-				csv += arr[i] + ",";
+				csv.append(arr[i] + ",");
 
-		return csv;
+		return csv.toString();
 	}
 
 	/**
@@ -61,16 +68,16 @@ public class UtilsComponent {
 	 * @param list
 	 * @return
 	 */
-	public String StringListToCsv(List<String> list) {
-		String csv = "";
+	public String stringListToCsv(List<String> list) {
+		StringBuilder csv = new StringBuilder();
 
 		for (int i = 0; i < list.size(); i++)
 			if (i == list.size() - 1)
-				csv += list.get(i);
+				csv.append(list.get(i));
 			else
-				csv += list.get(i) + ",";
+				csv.append(list.get(i) + ",");
 
-		return csv;
+		return csv.toString();
 	}
 
 	/**
@@ -84,7 +91,7 @@ public class UtilsComponent {
 
 		for (Map.Entry<String, List<String>> entry : domain.entrySet())
 			for (String key : entry.getValue())
-				keys.add(key);
+				keys.add(key.replace(",", ""));
 
 		return keys;
 	}
@@ -119,14 +126,15 @@ public class UtilsComponent {
 	 * @return
 	 */
 	public Date parseStringToDate(String date) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-ddThh:mm:ss");
+		LOG.info("Parsing date -> " + date);
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ");
 		Date d = null;
 		try {
-			d = sdf.parse(date);
-			LOG.info(d.toString());
+			d = df.parse(date);
 		} catch (ParseException e) {
-			LOG.error("Error parsing date " + e.getMessage());			
+			LOG.error("Cannot parse date " + e.getMessage());
 		}
+
 		return d;
 	}
 }

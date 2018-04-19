@@ -29,7 +29,7 @@ import com.atos.coderank.services.RoleService;
 import com.atos.coderank.services.UserService;
 
 @RestController
-@RequestMapping("/api/private/initialize")
+@RequestMapping("/api/public/initialize")
 public class InitDataController {
 
 	private static final Log LOG = LogFactory.getLog(InitDataController.class);
@@ -58,8 +58,19 @@ public class InitDataController {
 	@Qualifier("badgesService")
 	private BadgesService bs;
 
-	@GetMapping("/gen-roles")
-	public ResponseEntity<List<RoleEntity>> createRoles() {
+	@GetMapping("")
+	public ResponseEntity<String> getData() {
+
+		// createRoles();
+		// createBadges();
+		// syncrhonizeGroupsFromSonar();
+		// syncrhonizeUsersFromSonar();
+		// syncrhonizeProjectsFromSonar();
+
+		return new ResponseEntity<>("OK", HttpStatus.OK);
+	}
+
+	public void createRoles() {
 		List<RoleEntity> list = new ArrayList<>();
 
 		list.add(new RoleEntity("ROLE_ADMIN"));
@@ -71,41 +82,34 @@ public class InitDataController {
 			this.rs.saveOrUpdate(role);
 		}
 
-		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
-	@GetMapping("/sonar-groups")
-	public ResponseEntity<List<GroupEntity>> syncrhonizeGroupsFromSonar() {
+	private void syncrhonizeGroupsFromSonar() {
 		List<GroupEntity> list = this.su.findAllGroups();
 		List<GroupEntity> saved = new ArrayList<>();
 
 		for (GroupEntity group : list) {
 			saved.add(this.gs.saveOrUpdate(group));
 		}
-
-		return new ResponseEntity<>(saved, HttpStatus.OK);
 	}
 
-	@GetMapping("/sonar-users")
-	public ResponseEntity<List<UserEntity>> syncrhonizeUsersFromSonar() {
+	public void syncrhonizeUsersFromSonar() {
 		List<UserEntity> list = this.su.findAllUsers();
 		List<UserEntity> saved = new ArrayList<>();
 
 		for (UserEntity user : list) {
 			saved.add(this.us.saveOrUpdate(user));
-			// Decirle al grupo que tiene un usuario
+
 			for (GroupEntity group : user.getGroups()) {
-				GroupEntity g = this.gs.findByName(group.getName());
+				GroupEntity g = this.gs.findByName(group.getName().replace(" ", "-").toLowerCase());
 				g.getUsers().add(user);
 				this.gs.saveOrUpdate(g);
 			}
 		}
 
-		return new ResponseEntity<>(saved, HttpStatus.OK);
 	}
 
-	@GetMapping("sonar-projects")
-	public ResponseEntity<List<ProjectEntity>> syncrhonizeProjectsFromSonar() {
+	public void syncrhonizeProjectsFromSonar() {
 		List<ProjectEntity> projects = this.su.findAllProjects();
 		List<ProjectEntity> saved = new ArrayList<>();
 
@@ -121,11 +125,9 @@ public class InitDataController {
 			saved.add(model);
 		}
 
-		return new ResponseEntity<>(saved, HttpStatus.OK);
 	}
 
-	@GetMapping("gen-badges")
-	public ResponseEntity<List<BadgesEntity>> createBadges() {
+	public void createBadges() {
 		List<BadgesEntity> list = new ArrayList<>();
 		String basePath = "./src/main/resources/static/images/badges/";
 		File files = new File(basePath);
@@ -138,14 +140,14 @@ public class InitDataController {
 				BadgesEntity badge = new BadgesEntity();
 				badge.setImage(Files.readAllBytes(image.toPath()));
 				badge.setName(file);
+				badge.setDomain(file.substring(file.indexOf('_') + 1, file.lastIndexOf('_')));
+				badge.setBadgeClass(file.substring(file.lastIndexOf('_') + 1, file.lastIndexOf('.')));
 				list.add(this.bs.saveOrUpdate(badge));
-			} catch (IOException e) {
-				LOG.warn("Cannot create badge " + file);
-				LOG.error(e.getMessage());
-				
+			} catch (IOException e) {				
+				LOG.error("Cannot create badge " + file + " -> " + e.getMessage());
+
 			}
 		}
 
-		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 }

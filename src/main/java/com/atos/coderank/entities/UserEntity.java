@@ -1,6 +1,5 @@
 package com.atos.coderank.entities;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -18,9 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "USERS")
-public class UserEntity implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class UserEntity {
 
 	@Id
 	@Column(name = "DAS")
@@ -69,21 +66,9 @@ public class UserEntity implements Serializable {
 	private List<Map<String, Object>> serializedBadges;
 
 	public UserEntity() {
+		
 	}
 
-	public UserEntity(String das, String name, String surname, String email, String password, byte[] photo,
-			Date createdDate, Date lockedDate, Boolean enabled, Boolean locked, RoleEntity role) {
-		this.das = das;
-		this.name = name;
-		this.email = email;
-		this.password = password;
-		this.photo = photo;
-		this.createdDate = createdDate;
-		this.lockedDate = lockedDate;
-		this.enabled = enabled;
-		this.locked = locked;
-		this.role = role;
-	}
 
 	public void addGroup(GroupEntity group) {
 		if (!groups.contains(group)) {

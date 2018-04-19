@@ -177,7 +177,7 @@ public class ProjectMetricsEntity {
 
 	private void initDuplications() {
 		List<String> list = new ArrayList<>(
-				Arrays.asList("duplicated_lines", "duplicated_lines_density", "duplicated_blocks"));
+				Arrays.asList("duplicated_lines", "duplicated_lines_density", "duplicated_blocks","duplicated_files"));
 		this.domains.put("duplications", list);
 	}
 

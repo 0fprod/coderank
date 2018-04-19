@@ -40,14 +40,6 @@ public class ReportNotificationEntity {
 
 	}
 
-	public ReportNotificationEntity(Long notificationId, byte[] downloadList, byte[] emailedList, Date nextDate,
-			Date lastDate) {
-		this.notificationId = notificationId;
-		this.downloadList = downloadList;
-		this.emailedList = emailedList;
-		this.nextDate = nextDate;
-		this.lastDate = lastDate;
-	}
 
 	@Override
 	public String toString() {

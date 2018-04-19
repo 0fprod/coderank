@@ -204,7 +204,7 @@ public class SonarUtils {
 		List<String> metrics = this.uc.getAllMetricKeys(pme.getDomains());
 
 		RestTemplate rt = new RestTemplate();
-		String url1 = SONAR_API + "measures/component?component=" + projectkey + "&metricKeys="	+ this.uc.StringListToCsv(metrics);
+		String url1 = SONAR_API + "measures/component?component=" + projectkey + "&metricKeys="	+ this.uc.stringListToCsv(metrics);
 		String url2 = SONAR_API + "projects/search?projects=" + projectkey;
 		
 		try {
@@ -215,7 +215,7 @@ public class SonarUtils {
 			pme.setVersionDate(this.uc.parseStringToDate(jsonResponseProject.getJSONArray("components").getJSONObject(0).getString("lastAnalysisDate")));			
 
 			JSONObject jsonResponseMetrics = new JSONObject(responseMetrics.getBody());
-			JSONArray jsonMeasures = jsonResponseMetrics.getJSONArray("measures");
+			JSONArray jsonMeasures = jsonResponseMetrics.getJSONObject("component").getJSONArray("measures");
 
 			for (int i = 0; i < jsonMeasures.length(); i++) {
 				JSONObject jsonMetrics = jsonMeasures.getJSONObject(i);
@@ -272,6 +272,9 @@ public class SonarUtils {
 				case "duplicated_lines": // Duplication
 					pme.setDupDuplicatedLines(jsonMetrics.getInt(VALUE));
 					break;
+				case "duplicated_files" :
+					pme.setDupDuplicatedFiles(jsonMetrics.getInt(VALUE));
+					break;
 				case "duplicated_lines_density":
 					pme.setDupDuplicatedLinesDensity(jsonMetrics.getString(VALUE) + "%");
 					break;
@@ -313,18 +316,19 @@ public class SonarUtils {
 			}
 
 		} catch (JSONException e) {
-			LOG.error("Error fiding all projects -> " + e.getMessage());
+			LOG.error("Error when trying to scan a project -> " + e.getMessage());
+			return null;
 		}
 
 		return pme;
 	}
 
-	public void syncrhonizeProject() {
-		// This method is not implemented yet
+	public void scanAllProjects() {
+		// This method is not implemented yet		
 	}
 
 	/**
-	 * Cabeceras para conectar con sonarQube
+	 * Headers to connect to sonarQube
 	 * 
 	 * @return
 	 */

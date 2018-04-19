@@ -30,9 +30,8 @@ public class UserService {
 	@Qualifier("utilsComponent")
 	private UtilsComponent uc;
 
-	public UserEntity findByDas(String das) {
-		UserEntity user = ur.findByDasIgnoreCase(das);
-		return user;
+	public UserEntity findByDas(String das) {		
+		return ur.findByDasIgnoreCase(das);
 	}
 
 	public UserEntity saveOrUpdate(UserEntity user) {
@@ -47,7 +46,7 @@ public class UserService {
 			// DefaultInfo
 			ue.setRole(this.rs.findByName("ROLE_DEV"));
 			ue.setPassword(this.passwordEncoder.encode("eqalizer0"));			
-			ue.setPhoto(this.uc.loadImage("./src/main/resources/static/images/user_default.png"));				
+			ue.setPhoto(this.uc.loadImage("./src/main/resources/static/images/defaults/user_default.png"));				
 			ue.setCreatedDate(new Date());
 			ue.setEnabled(false);
 			ue.setLocked(false);

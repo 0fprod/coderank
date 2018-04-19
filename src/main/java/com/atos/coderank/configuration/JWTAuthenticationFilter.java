@@ -1,5 +1,10 @@
 package com.atos.coderank.configuration;
 
+import static com.atos.coderank.configuration.SecurityConstants.EXPIRATION_TIME;
+import static com.atos.coderank.configuration.SecurityConstants.HEADER_STRING;
+import static com.atos.coderank.configuration.SecurityConstants.SECRET;
+import static com.atos.coderank.configuration.SecurityConstants.TOKEN_PREFIX;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -21,11 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-
-import static com.atos.coderank.configuration.SecurityConstants.EXPIRATION_TIME;
-import static com.atos.coderank.configuration.SecurityConstants.HEADER_STRING;
-import static com.atos.coderank.configuration.SecurityConstants.SECRET;
-import static com.atos.coderank.configuration.SecurityConstants.TOKEN_PREFIX;
 
 /**
  * Following: https://auth0.com/blog/implementing-jwt-authentication-on-spring-boot/?utm_source=medium&utm_medium=sc&utm_campaign=spring_boot_api
@@ -41,13 +40,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	}
 
 	@Override
-	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 
 		try {
 			UserEntity creds = new ObjectMapper().readValue(request.getInputStream(), UserEntity.class);
 			UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(creds.getDas(), creds.getPassword(), new ArrayList<>());
-			Authentication auth = this.authenticationManager.authenticate(upat);
-			return auth;
+			return this.authenticationManager.authenticate(upat);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

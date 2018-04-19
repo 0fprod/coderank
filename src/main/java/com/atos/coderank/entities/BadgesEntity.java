@@ -26,6 +26,12 @@ public class BadgesEntity {
 	@Column(name = "NAME")
 	private String name;
 
+	@Column(name = "DOMAIN")
+	private String domain;
+
+	@Column(name = "BADGE_CLASS")
+	private String badgeClass;
+
 	@Column(name = "IMAGE")
 	private byte[] image;
 
@@ -51,7 +57,7 @@ public class BadgesEntity {
 	public void addProject(ProjectEntity pe) {
 		if (!projects.contains(pe)) {
 			projects.add(pe);
-			pe.addBadge(this);
+			//pe.addBadge(this);
 		}
 	}
 
@@ -76,9 +82,9 @@ public class BadgesEntity {
 
 	@Override
 	public String toString() {
-		return "BadgesEntity [badgeId=" + badgeId + ", name=" + name + ", user=" + users + ", project=" + projects
-				+ "]";
-	}	
+		return "BadgesEntity [badgeId=" + badgeId + ", name=" + name + ", domain=" + domain + ", badgeClass="
+				+ badgeClass + "]";
+	}
 
 	public Long getBadgeId() {
 		return badgeId;
@@ -118,6 +124,30 @@ public class BadgesEntity {
 
 	public void setImage(byte[] image) {
 		this.image = image;
+	}
+
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+
+	public String getBadgeClass() {
+		return badgeClass;
+	}
+
+	public void setBadgeClass(String badgeClass) {
+		this.badgeClass = badgeClass;
+	}
+
+	public List<ProjectEntity> getProjects() {
+		return projects;
+	}
+
+	public void setProjects(List<ProjectEntity> projects) {
+		this.projects = projects;
 	}
 
 }

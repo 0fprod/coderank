@@ -74,19 +74,6 @@ public class ProjectEntity {
 
 	}
 
-	public ProjectEntity(String projectId, String key, String name, String url, byte[] logo, Boolean locked,
-			Date createddate, Date lockeddate) {
-		super();
-		this.projectId = projectId;
-		this.key = key;
-		this.name = name;
-		this.url = url;
-		this.logo = logo;
-		this.locked = locked;
-		this.createdDate = createddate;
-		this.lockedDate = lockeddate;
-	}
-
 	public void addMetrics(ProjectMetricsEntity pme) {
 		if (!metrics.contains(pme)) {
 			metrics.add(pme);

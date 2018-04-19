@@ -50,14 +50,6 @@ public class ProjectReportsEntity {
 
 	}
 
-	public ProjectReportsEntity(String name, byte[] document, Date createddate, String method, String format) {
-		super();
-		this.name = name;
-		this.document = document;
-		this.createdDate = createddate;
-		this.method = method;
-		this.format = format;
-	}
 
 	@Override
 	public String toString() {
