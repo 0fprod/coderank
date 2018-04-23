@@ -1,0 +1,23 @@
+insert into coderankdb.roles(id,description,name) values (0,'Admin role', 'ROLE_ADMIN');
+insert into coderankdb.roles(id,description,name) values (1,'Software Quality Manager role', 'ROLE_SQM');
+insert into coderankdb.roles(id,description,name) values (2,'Operations Manager role', 'ROLE_OM');
+insert into coderankdb.roles(id,description,name) values (3,'Developers role', 'ROLE_DEV');
+
+insert into coderankdb.users(das, password, email, name, surname, roles_id) values ('A000', '12345', 'e@mail.com', 'Carmelo', 'Anthony', 0);
+insert into coderankdb.users(das, password, email, name, surname, roles_id) values ('A001', '12345', 'e@mail.com', 'LeBron', 'James', 1);
+insert into coderankdb.users(das, password, email, name, surname, roles_id) values ('A002', '12345', 'e@mail.com', 'Stephen', 'Curry', 1);
+insert into coderankdb.users(das, password, email, name, surname, roles_id) values ('A003', '12345', 'e@mail.com', 'Pau', 'Gasol', 2);
+insert into coderankdb.users(das, password, email, name, surname, roles_id) values ('A005', '12345', 'e@mail.com', 'Kobe', 'Bryant', 3);
+insert into coderankdb.users(das, password, email, name, surname, roles_id) values ('A004', '12345', 'e@mail.com', 'Kyrie', 'Irving', 3);
+
+insert into coderankdb.groups(id, description, name) values (0, 'Group number 0', 'Group0');
+insert into coderankdb.groups(id, description, name) values (1, 'Group number 1', 'Group1');
+insert into coderankdb.groups(id, description, name) values (2, 'Group number 2', 'Group2');
+
+insert into coderankdb.users_groups(group_id, das) values (0,'A000');
+insert into coderankdb.users_groups(group_id, das) values (0,'A001');
+insert into coderankdb.users_groups(group_id, das) values (0,'A002');
+insert into coderankdb.users_groups(group_id, das) values (1,'A003');
+insert into coderankdb.users_groups(group_id, das) values (2,'A004');
+insert into coderankdb.users_groups(group_id, das) values (2,'A005');
+insert into coderankdb.users_groups(group_id, das) values (1,'A000');
