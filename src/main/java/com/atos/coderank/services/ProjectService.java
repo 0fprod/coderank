@@ -21,7 +21,7 @@ import com.atos.coderank.repositories.ProjectRepository;
 public class ProjectService {
 
 	private static final Log LOG = LogFactory.getLog(ProjectService.class);
-	
+
 	@Autowired
 	@Qualifier("projectCalculator")
 	private ProjectCalculator pc;
@@ -41,7 +41,7 @@ public class ProjectService {
 	@Autowired
 	@Qualifier("rankingService")
 	private RankingService rs;
-	
+
 	@Autowired
 	@Qualifier("groupService")
 	private GroupService gs;
@@ -73,9 +73,9 @@ public class ProjectService {
 			entity.setMetrics((entity.getMetrics() == null) ? new ArrayList<>() : entity.getMetrics());
 			entity.getMetrics().add(pme);
 
-			this.pc.setProject(entity); //Calculate metrics and give value to ranking and badges
-			
-			saved = this.pr.saveAndFlush(entity); 
+			this.pc.setProject(entity); // Calculate metrics and give value to ranking and badges
+
+			saved = this.pr.saveAndFlush(entity);
 			saved.setRanking(this.pc.calcRanking());
 			saved.setBadges(this.pc.calcBadges());
 
@@ -103,6 +103,16 @@ public class ProjectService {
 
 		return saved;
 
+	}
+
+	/**
+	 * Called from scheduled tasks
+	 * 
+	 * @param project
+	 * @return
+	 */
+	public ProjectEntity saveAndFlush(ProjectEntity project) {
+		return this.pr.saveAndFlush(project);
 	}
 
 	public List<ProjectEntity> findAll() {

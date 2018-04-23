@@ -9,6 +9,8 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "RANKING")
 public class RankingEntity {
@@ -22,6 +24,7 @@ public class RankingEntity {
 	@Column(name = "POSITION")
 	private int position;
 	
+	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_ID", unique = true)
 	@MapsId
