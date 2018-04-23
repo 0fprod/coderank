@@ -40,7 +40,7 @@ public class GroupController {
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
-	@GetMapping("/{group_id}")
+	@GetMapping("/{groupid}")
 	public ResponseEntity<GroupEntity> findByGroupId(@PathVariable String groupid) {
 		Long id = Long.parseLong(groupid);
 		GroupEntity group = this.gs.findByGroupId(id);

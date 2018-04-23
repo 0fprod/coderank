@@ -1,10 +1,7 @@
 package com.atos.coderank.configuration;
 
-import static com.atos.coderank.configuration.SecurityConstants.LOGIN_URL;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -36,8 +33,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 			.csrf().disable()
 			.authorizeRequests().antMatchers("api/public/**").permitAll()
-			.and()
-			.authorizeRequests().antMatchers(HttpMethod.POST, LOGIN_URL).permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.addFilter(new JWTAuthenticationFilter(authenticationManager()))
