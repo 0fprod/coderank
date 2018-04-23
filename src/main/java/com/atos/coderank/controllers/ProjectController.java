@@ -18,15 +18,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.atos.coderank.components.JsonSerializers;
+import com.atos.coderank.entities.BadgesEntity;
 import com.atos.coderank.entities.GroupEntity;
 import com.atos.coderank.entities.ProjectEntity;
+import com.atos.coderank.services.BadgesService;
 import com.atos.coderank.services.GroupService;
+import com.atos.coderank.services.ProjectMetricsService;
 import com.atos.coderank.services.ProjectService;
+import com.atos.coderank.services.RankingService;
 
 @RestController
 @RequestMapping("api/private/projects")
 public class ProjectController {
 
+	@Autowired
+	@Qualifier("badgesService")
+	private BadgesService bs;
+	
+	@Autowired
+	@Qualifier("projectMetricsService")
+	private ProjectMetricsService pms;
+	
+	@Autowired
+	@Qualifier("rankingService")
+	private RankingService rs;
+	
 	@Autowired
 	@Qualifier("projectService")
 	private ProjectService ps;
@@ -105,9 +121,24 @@ public class ProjectController {
 			response = "Cannot delete the project with id '" + project.getProjectId() + "'. It doesnt exist.";
 			status = HttpStatus.NOT_FOUND;
 		} else {
+			//Unbind from group
 			GroupEntity group = projectToDelete.getGroup();
-			group.setProject(null);
-			this.gs.saveOrUpdate(group);
+			if(group != null) {
+				group.setProject(null);				
+				this.gs.saveOrUpdate(group);
+			}
+			//Unbind from badges
+			List<BadgesEntity> badges = projectToDelete.getBadges();
+			for (BadgesEntity badge : badges) {
+				badge.removeProject(projectToDelete);
+				this.bs.saveOrUpdate(badge);
+			}
+			//Unbind from ranking
+			this.rs.deleteByProjectId(projectToDelete);
+			
+			//Delete metrics
+			this.pms.deleteMetricsByProjectId(projectToDelete);
+			
 			this.ps.delete(projectToDelete);
 		}
 

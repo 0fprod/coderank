@@ -8,4 +8,6 @@ import com.atos.coderank.entities.RankingEntity;
 @Repository("rankingRepository")
 public interface RankingRepository extends JpaRepository<RankingEntity, String>{
 
+	abstract void deleteByProjectId(String projectId);
+
 }

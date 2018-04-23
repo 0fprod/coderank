@@ -27,4 +27,8 @@ public class RankingService {
 		
 		this.saveOrUpdate(re);
 	}
+
+	public void deleteByProjectId(ProjectEntity project) {
+		this.rr.deleteById(project.getProjectId());		
+	}
 }

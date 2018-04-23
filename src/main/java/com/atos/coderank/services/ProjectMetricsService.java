@@ -17,29 +17,37 @@ public class ProjectMetricsService {
 	@Autowired
 	@Qualifier("sonarUtils")
 	private SonarUtils su;
-	
+
 	@Autowired
 	@Qualifier("projectService")
 	private ProjectService ps;
-	
+
 	@Autowired
 	@Qualifier("projectMetricsRepository")
 	private ProjectMetricsRepository pmr;
-	
-	public ProjectMetricsEntity calcSonarQubeMetrics(ProjectEntity project) {			
-		
+
+	public ProjectMetricsEntity calcSonarQubeMetrics(ProjectEntity project) {
+
 		ProjectMetricsEntity pme = this.su.scanOneProject(project.getKey());
 		project.setProjectId(pme.getProject().getProjectId());
 		pme.setProject(project);
-		
+
 		return pme;
 	}
 
-	public List<ProjectMetricsEntity> findAllMostRecent() {		
+	public List<ProjectMetricsEntity> findAllMostRecent() {
 		return this.pmr.findMostRecents();
 	}
 
 	public ProjectMetricsEntity findMostRecentByProjectId(String projectId) {
 		return this.pmr.findMostRecentByProjectId(projectId);
+	}
+
+	public void deleteMetricsByProjectId(ProjectEntity project) {
+		List<ProjectMetricsEntity> list = project.getMetrics();
+
+		for (ProjectMetricsEntity entity : list)
+			this.pmr.deleteById(entity.getMetricsId());
+
 	}
 }
