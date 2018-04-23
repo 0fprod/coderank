@@ -39,9 +39,9 @@ public class GroupService {
 		}
 		
 		if (group.getSerializedProject().get("projectKey") != null) {
-			ProjectEntity project = this.pr.findByProjectId(group.getSerializedProject().get("projectKey").toString());
+			ProjectEntity project = this.pr.findByProjectId(group.getSerializedProject().get("projectKey"));
 			ge.setProject(project == null ? ge.getProject() : project);
-			//project.setGroup(ge);
+			
 		}
 
 		return this.gr.saveAndFlush(ge);

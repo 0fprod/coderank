@@ -47,7 +47,7 @@ public class ProjectReportsEntity {
 	private ReportNotificationEntity notification;
 
 	public ProjectReportsEntity() {
-
+		// Comment Required by sonarlint
 	}
 
 

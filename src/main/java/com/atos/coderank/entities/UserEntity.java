@@ -65,7 +65,8 @@ public class UserEntity {
 	private List<Map<String, Object>> serializedBadges;
 
 	public UserEntity() {
-		
+		// Comment Required by sonarlint
+
 	}
 
 

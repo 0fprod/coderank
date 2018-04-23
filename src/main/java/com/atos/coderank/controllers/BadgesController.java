@@ -72,8 +72,8 @@ public class BadgesController {
 					entity.addUser(this.us.findByDas(user.getDas()));
 			
 			//Add projects to this badge
-			if(null != badge.getProject())
-				for (ProjectEntity project : badge.getProject()) {
+			if(null != badge.getProjects())
+				for (ProjectEntity project : badge.getProjects()) {
 					//FindProject
 					project = this.ps.findById(project.getProjectId());
 					entity.addProject(project);

@@ -71,7 +71,7 @@ public class ProjectEntity {
 	private List<Map<String, Object>> serializedBadges;
 
 	public ProjectEntity() {
-
+		// Comment required by sonar lint
 	}
 
 	public void addMetrics(ProjectMetricsEntity pme) {

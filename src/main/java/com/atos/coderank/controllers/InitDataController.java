@@ -84,6 +84,7 @@ public class InitDataController {
 
 	}
 
+	@SuppressWarnings("unused")
 	private void syncrhonizeGroupsFromSonar() {
 		List<GroupEntity> list = this.su.findAllGroups();
 		List<GroupEntity> saved = new ArrayList<>();

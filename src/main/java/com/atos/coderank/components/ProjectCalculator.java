@@ -68,31 +68,31 @@ public class ProjectCalculator {
 		int numberOfMetrics = 8; // from 0 to 7
 
 		for (int i = 0; i < numberOfMetrics; i++) {
-			if (getAttribute(i) != null) {
-				try {
-					int index;
-					switch (getAttribute(i).get(LABEL).toString()) {
-					case "A":
-						index = findIndexByDomainAndClass(allBadges, getAttribute(i).get(DOMAIN).toString(), GOLD);
-						badges.add(allBadges.get(index));
-						break;
-					case "B":
-						index = findIndexByDomainAndClass(allBadges, getAttribute(i).get(DOMAIN).toString(), SILVER);
-						badges.add(allBadges.get(index));
-						break;
-					case "C":
-						index = findIndexByDomainAndClass(allBadges, getAttribute(i).get(DOMAIN).toString(), BRONZE);
-						badges.add(allBadges.get(index));
-						break;
-					default:
-						break;
-					}
-				} catch (IndexOutOfBoundsException e) {
-					LOG.error("Error! Trying to access to position " + i + " -> " + e.getMessage());
+
+			try {
+				int index;
+				switch (getAttribute(i).get(LABEL).toString()) {
+				case "A":
+					index = findIndexByDomainAndClass(allBadges, getAttribute(i).get(DOMAIN).toString(), GOLD);
+					badges.add(allBadges.get(index));
+					break;
+				case "B":
+					index = findIndexByDomainAndClass(allBadges, getAttribute(i).get(DOMAIN).toString(), SILVER);
+					badges.add(allBadges.get(index));
+					break;
+				case "C":
+					index = findIndexByDomainAndClass(allBadges, getAttribute(i).get(DOMAIN).toString(), BRONZE);
+					badges.add(allBadges.get(index));
+					break;
+				default:
+					break;
 				}
-			} else {
-				LOG.warn("Error! Attribute is null");
+			} catch (IndexOutOfBoundsException e) {
+				LOG.error("Error! Trying to access to position " + i + " -> " + e.getMessage());
+			} catch (Exception e ) {
+				LOG.error("Error! --> " + e.getMessage());
 			}
+
 		}
 
 		return badges;
@@ -173,7 +173,7 @@ public class ProjectCalculator {
 		case 7:
 			return getReliability();
 		default:
-			return null;
+			return new HashMap<>();
 		}
 	}
 

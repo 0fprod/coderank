@@ -80,7 +80,7 @@ public class ProjectMetricsRepositoryTest {
 		System.out.println("#################");
 		System.out.println("#################");
 
-		assertEquals(list.size(), 2);
+		assertEquals(2, list.size());
 
 	}
 

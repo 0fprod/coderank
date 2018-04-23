@@ -37,7 +37,7 @@ public class SonarUtils {
 	private static final Log LOG = LogFactory.getLog(SonarUtils.class);
 	private static final String METRIC = "metric";
 	private static final String VALUE = "value";
-
+	private static final String COMPONENTS = "components";
 	@Autowired
 	@Qualifier("utilsComponent")
 	private UtilsComponent uc;
@@ -159,7 +159,7 @@ public class SonarUtils {
 					String.class);
 
 			JSONObject jsonResponse = new JSONObject(response.getBody());
-			JSONArray jsonProjects = jsonResponse.getJSONArray("components");
+			JSONArray jsonProjects = jsonResponse.getJSONArray(COMPONENTS);
 
 			for (int i = 0; i < jsonProjects.length(); i++) {
 				JSONObject jsonProject = jsonProjects.getJSONObject(i);
@@ -213,10 +213,10 @@ public class SonarUtils {
 			ResponseEntity<String> responseProject = rt.exchange(url2, HttpMethod.GET, new HttpEntity<String>(getHeaders()), String.class);
 			
 			JSONObject jsonResponseProject = new JSONObject(responseProject.getBody());
-			pme.setVersionDate(this.uc.parseStringToDate(jsonResponseProject.getJSONArray("components").getJSONObject(0).getString("lastAnalysisDate")));			
-			pme.getProject().setProjectId(jsonResponseProject.getJSONArray("components").getJSONObject(0).getString("id"));
+			pme.setVersionDate(this.uc.parseStringToDate(jsonResponseProject.getJSONArray(COMPONENTS).getJSONObject(0).getString("lastAnalysisDate")));			
+			pme.getProject().setProjectId(jsonResponseProject.getJSONArray(COMPONENTS).getJSONObject(0).getString("id"));
 			JSONObject jsonResponseMetrics = new JSONObject(responseMetrics.getBody());
-			JSONArray jsonMeasures = jsonResponseMetrics.getJSONObject("component").getJSONArray("measures");
+			JSONArray jsonMeasures = jsonResponseMetrics.getJSONObject(COMPONENTS).getJSONArray("measures");
 
 			for (int i = 0; i < jsonMeasures.length(); i++) {
 				JSONObject jsonMetrics = jsonMeasures.getJSONObject(i);

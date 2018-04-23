@@ -57,7 +57,6 @@ public class BadgesEntity {
 	public void addProject(ProjectEntity pe) {
 		if (!projects.contains(pe)) {
 			projects.add(pe);
-			//pe.addBadge(this);
 		}
 	}
 
@@ -108,14 +107,6 @@ public class BadgesEntity {
 
 	public void setUsers(List<UserEntity> users) {
 		this.users = users;
-	}
-
-	public List<ProjectEntity> getProject() {
-		return projects;
-	}
-
-	public void setProject(List<ProjectEntity> projects) {
-		this.projects = projects;
 	}
 
 	public byte[] getImage() {
