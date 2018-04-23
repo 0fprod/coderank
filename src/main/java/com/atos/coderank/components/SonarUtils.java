@@ -201,6 +201,7 @@ public class SonarUtils {
 	public ProjectMetricsEntity scanOneProject(String projectkey) {
 
 		ProjectMetricsEntity pme = new ProjectMetricsEntity();
+		pme.setProject(new ProjectEntity());
 		List<String> metrics = this.uc.getAllMetricKeys(pme.getDomains());
 
 		RestTemplate rt = new RestTemplate();
@@ -213,7 +214,7 @@ public class SonarUtils {
 			
 			JSONObject jsonResponseProject = new JSONObject(responseProject.getBody());
 			pme.setVersionDate(this.uc.parseStringToDate(jsonResponseProject.getJSONArray("components").getJSONObject(0).getString("lastAnalysisDate")));			
-
+			pme.getProject().setProjectId(jsonResponseProject.getJSONArray("components").getJSONObject(0).getString("id"));
 			JSONObject jsonResponseMetrics = new JSONObject(responseMetrics.getBody());
 			JSONArray jsonMeasures = jsonResponseMetrics.getJSONObject("component").getJSONArray("measures");
 

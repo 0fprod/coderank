@@ -22,6 +22,7 @@ public class ProjectMetricsService {
 	public ProjectMetricsEntity calcSonarQubeMetrics(ProjectEntity project) {			
 		
 		ProjectMetricsEntity pme = this.su.scanOneProject(project.getKey());
+		project.setProjectId(pme.getProject().getProjectId());
 		pme.setProject(project);
 		
 		return pme;

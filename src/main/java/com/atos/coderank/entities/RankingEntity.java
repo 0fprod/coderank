@@ -19,6 +19,9 @@ public class RankingEntity {
 	@Column(name = "CALIFICATION")
 	private Double calification;
 
+	@Column(name = "POSITION")
+	private int position;
+	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_ID", unique = true)
 	@MapsId
@@ -51,6 +54,14 @@ public class RankingEntity {
 	@Override
 	public String toString() {
 		return "RankingEntity [calification=" + calification + ", project=" + project + "]";
+	}
+
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
 	}
 
 }

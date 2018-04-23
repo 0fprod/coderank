@@ -65,9 +65,9 @@ public class ProjectController {
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
-	@GetMapping("/{project_id}")
-	public ResponseEntity<ProjectEntity> findById(@PathVariable String projectId) {
-		ProjectEntity project = this.ps.findById(projectId);
+	@GetMapping("/{projectid}")
+	public ResponseEntity<ProjectEntity> findById(@PathVariable String projectid) {
+		ProjectEntity project = this.ps.findById(projectid);
 		HttpStatus status = HttpStatus.OK;
 
 		if (project == null)

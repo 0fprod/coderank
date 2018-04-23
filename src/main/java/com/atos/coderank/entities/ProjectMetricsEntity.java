@@ -19,6 +19,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "METRICS")
 public class ProjectMetricsEntity {
@@ -29,6 +31,7 @@ public class ProjectMetricsEntity {
 	@Column(name = "METRICS_ID")
 	private Long metricsId;
 
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_ID")
 	private ProjectEntity project;

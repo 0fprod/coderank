@@ -1,18 +1,38 @@
 package com.atos.coderank.components;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import com.atos.coderank.entities.BadgesEntity;
+import com.atos.coderank.entities.ProjectEntity;
 import com.atos.coderank.entities.ProjectMetricsEntity;
+import com.atos.coderank.entities.RankingEntity;
+import com.atos.coderank.services.BadgesService;
 
-@Component("QualificationCalculator")
-public class QualificationCalculator {
+@Component("projectCalculator")
+public class ProjectCalculator {
 
+	private static final Log LOG = LogFactory.getLog(ProjectCalculator.class);
+
+	@Autowired
+	@Qualifier("badgesService")
+	private BadgesService bs;
+
+	private static final String GOLD = "gold";
+	private static final String SILVER = "silver";
+	private static final String BRONZE = "bronze";
+
+	private static final String DOMAIN = "domain";
 	private static final String VALUE = "value";
 	private static final String LABEL = "label";
-	private static final String DOMAIN = "domain";
 
 	private double qualification;
 	private int size;
@@ -25,11 +45,75 @@ public class QualificationCalculator {
 	private Map<String, Object> duplication;
 	private Map<String, Object> reliability;
 
-	public QualificationCalculator() {
-		// Sonar lint requirement
+	/**
+	 * Calculates the badges and qualification of the given project (must have at
+	 * least 1 projectMetrics)
+	 * 
+	 * @param project
+	 */
+	public void setProject(ProjectEntity project) {
+		int last = project.getMetrics().size() - 1;
+		calcMetrics(project.getMetrics().get(last));
 	}
 
-	public void calcMetrics(ProjectMetricsEntity pme) {
+	/**
+	 * Returns the list of badges that this project deservces
+	 * 
+	 * @return
+	 */
+	public List<BadgesEntity> calcBadges() {
+		List<BadgesEntity> allBadges = this.bs.findAllByBadgeNameStartingWithOrderedByBadgeIdAsc("project_%");
+		List<BadgesEntity> badges = new ArrayList<>();
+
+		int numberOfMetrics = 8; // from 0 to 7
+
+		for (int i = 0; i < numberOfMetrics; i++) {
+			if (getAttribute(i) != null) {
+				try {
+					int index;
+					switch (getAttribute(i).get(LABEL).toString()) {
+					case "A":
+						index = findIndexByDomainAndClass(allBadges, getAttribute(i).get(DOMAIN).toString(), GOLD);
+						badges.add(allBadges.get(index));
+						break;
+					case "B":
+						index = findIndexByDomainAndClass(allBadges, getAttribute(i).get(DOMAIN).toString(), SILVER);
+						badges.add(allBadges.get(index));
+						break;
+					case "C":
+						index = findIndexByDomainAndClass(allBadges, getAttribute(i).get(DOMAIN).toString(), BRONZE);
+						badges.add(allBadges.get(index));
+						break;
+					default:
+						break;
+					}
+				} catch (IndexOutOfBoundsException e) {
+					LOG.error("Error! Trying to access to position " + i + " -> " + e.getMessage());
+				}
+			} else {
+				LOG.warn("Error! Attribute is null");
+			}
+		}
+
+		return badges;
+	}
+
+	/**
+	 * Calculate the qualification
+	 * 
+	 * @param project
+	 * @return
+	 */
+	public RankingEntity calcRanking() {
+		return new RankingEntity(getQualification());
+	}
+
+	/**
+	 * Set the values to the domains by the given metrics
+	 * 
+	 * @param pme
+	 */
+	private void calcMetrics(ProjectMetricsEntity pme) {
 		setSize(pme.getSizLines());
 		setSecurity(pme.getSecVulnerabilities());
 		// TODO setTesting(pme.getWhat?)
@@ -43,12 +127,34 @@ public class QualificationCalculator {
 	}
 
 	/**
+	 * Returns the index in the list of the given params
+	 * 
+	 * @param domain
+	 * @param badgeClass
+	 * @return
+	 */
+	private int findIndexByDomainAndClass(List<BadgesEntity> list, String domain, String badgeClass) {
+		int index = -1;
+		int sz = list.size();
+
+		for (int i = 0; i < sz; i++) {
+			BadgesEntity currentBadge = list.get(i);
+			if (currentBadge.getDomain().equals(domain) && currentBadge.getBadgeClass().equals(badgeClass)) {
+				index = i;
+				break;
+			}
+		}
+
+		return index;
+	}
+
+	/**
 	 * Returns the attribute of then given index
 	 * 
 	 * @param i
 	 * @return
 	 */
-	public Map<String, Object> getAttribute(int i) {
+	private Map<String, Object> getAttribute(int i) {
 		switch (i) {
 		case 0:
 			return getSecurity();
