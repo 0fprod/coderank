@@ -103,6 +103,8 @@ public class InitDataController {
 
 			for (GroupEntity group : user.getGroups()) {
 				GroupEntity g = this.gs.findByName(group.getName().replace(" ", "-").toLowerCase());
+				if (g.getUsers() == null)
+					g.setUsers(new ArrayList<>());
 				g.getUsers().add(user);
 				this.gs.saveOrUpdate(g);
 			}
@@ -144,7 +146,7 @@ public class InitDataController {
 				badge.setDomain(file.substring(file.indexOf('_') + 1, file.lastIndexOf('_')));
 				badge.setBadgeClass(file.substring(file.lastIndexOf('_') + 1, file.lastIndexOf('.')));
 				list.add(this.bs.saveOrUpdate(badge));
-			} catch (IOException e) {				
+			} catch (IOException e) {
 				LOG.error("Cannot create badge " + file + " -> " + e.getMessage());
 
 			}

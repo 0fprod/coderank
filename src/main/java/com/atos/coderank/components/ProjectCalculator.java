@@ -89,7 +89,7 @@ public class ProjectCalculator {
 				}
 			} catch (IndexOutOfBoundsException e) {
 				LOG.error("Error! Trying to access to position " + i + " -> " + e.getMessage());
-			} catch (Exception e ) {
+			} catch (Exception e) {
 				LOG.error("Error! --> " + e.getMessage());
 			}
 
@@ -116,7 +116,7 @@ public class ProjectCalculator {
 	private void calcMetrics(ProjectMetricsEntity pme) {
 		setSize(pme.getSizLines());
 		setSecurity(pme.getSecVulnerabilities());
-		// TODO setTesting(pme.getWhat?)
+		setTesting(pme.getTesCoverage());
 		setComplexity(pme.getComComplexity());
 		setIssues(pme.getIssViolations());
 		setMaintainability(pme.getMainSqaleRating());
@@ -204,19 +204,18 @@ public class ProjectCalculator {
 		this.security = m;
 	}
 
-	public void setTesting(double successDensity) {
+	public void setTesting(double coverage) {
 		Map<String, Object> m = new HashMap<>();
-
-		if (successDensity < 90) {
+		if (coverage >= 100) {
 			m.put(VALUE, 2);
 			m.put(LABEL, "A");
-		} else if (successDensity < 80) {
+		} else if (coverage > 80) {
 			m.put(VALUE, 1.5);
 			m.put(LABEL, "B");
-		} else if (successDensity < 50) {
+		} else if (coverage > 50) {
 			m.put(VALUE, 1.0);
 			m.put(LABEL, "C");
-		} else if (successDensity < 20) {
+		} else if (coverage > 20) {
 			m.put(VALUE, 0.5);
 			m.put(LABEL, "D");
 		} else {

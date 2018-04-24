@@ -54,7 +54,7 @@ public class ProjectService {
 		ProjectEntity entity = this.pr.findByProjectId(project.getProjectId());
 		ProjectEntity saved = null;
 
-		if (null == entity) { // new project
+		if (null == entity) { // new project 
 			LOG.info("Creating new project");
 			// NotNull
 			entity = new ProjectEntity();

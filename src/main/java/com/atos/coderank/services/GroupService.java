@@ -25,7 +25,7 @@ public class GroupService {
 	public GroupEntity saveOrUpdate(GroupEntity group) {
 		GroupEntity ge = this.gr.findByGroupId(group.getGroupId());
 
-		if (null == ge) {
+		if (null == ge) { 
 			// New group
 			ge = new GroupEntity();
 			ge.setName(group.getName().replaceAll(" ", "-").toLowerCase());
@@ -38,7 +38,7 @@ public class GroupService {
 			ge.setUsers(group.getUsers() == null ? ge.getUsers() : group.getUsers());						 
 		}
 		
-		if (group.getSerializedProject().get("projectKey") != null) {
+		if (group.getSerializedProject() != null && group.getSerializedProject().get("projectKey") != null) {
 			ProjectEntity project = this.pr.findByProjectId(group.getSerializedProject().get("projectKey"));
 			ge.setProject(project == null ? ge.getProject() : project);
 			

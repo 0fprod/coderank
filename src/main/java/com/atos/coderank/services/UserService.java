@@ -37,7 +37,7 @@ public class UserService {
 	public UserEntity saveOrUpdate(UserEntity user) {
 		UserEntity ue = this.ur.findByDasIgnoreCase(user.getDas());
 
-		if (null == ue) { // Es un usuario nuevo
+		if (null == ue) { // Es un usuario nuevo 
 			// NotNull info
 			ue = new UserEntity();
 			ue.setDas(user.getDas().toUpperCase());

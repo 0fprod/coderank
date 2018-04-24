@@ -1,0 +1,6 @@
+projectKey=coderank:coderank-backend-v1
+serverUrl=http://192.168.99.100:9001
+serverVersion=7.0.0.36138
+dashboardUrl=http://192.168.99.100:9001/dashboard/index/coderank:coderank-backend-v1
+ceTaskId=AWL3YBpuKdF2Ut2TwtMy
+ceTaskUrl=http://192.168.99.100:9001/api/ce/task?id=AWL3YBpuKdF2Ut2TwtMy

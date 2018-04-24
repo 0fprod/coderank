@@ -216,7 +216,7 @@ public class SonarUtils {
 			pme.setVersionDate(this.uc.parseStringToDate(jsonResponseProject.getJSONArray(COMPONENTS).getJSONObject(0).getString("lastAnalysisDate")));			
 			pme.getProject().setProjectId(jsonResponseProject.getJSONArray(COMPONENTS).getJSONObject(0).getString("id"));
 			JSONObject jsonResponseMetrics = new JSONObject(responseMetrics.getBody());
-			JSONArray jsonMeasures = jsonResponseMetrics.getJSONObject(COMPONENTS).getJSONArray("measures");
+			JSONArray jsonMeasures = jsonResponseMetrics.getJSONObject("component").getJSONArray("measures");
 
 			for (int i = 0; i < jsonMeasures.length(); i++) {
 				JSONObject jsonMetrics = jsonMeasures.getJSONObject(i);
