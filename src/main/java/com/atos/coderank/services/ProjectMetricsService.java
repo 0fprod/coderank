@@ -35,6 +35,10 @@ public class ProjectMetricsService {
 		return pme;
 	}
 
+	public ProjectMetricsEntity findByMetricsId(Long id) {
+		return this.pmr.findByMetricsId(id);
+	}
+
 	public List<ProjectMetricsEntity> findAllMostRecent() {
 		return this.pmr.findMostRecents();
 	}
@@ -49,5 +53,17 @@ public class ProjectMetricsService {
 		for (ProjectMetricsEntity entity : list)
 			this.pmr.deleteById(entity.getMetricsId());
 
+	}
+
+	public List<ProjectMetricsEntity> findTop10ByProjectProjectIdOrderByVersionDateDesc(String projectId) {
+		return this.pmr.findTop10ByProjectProjectIdOrderByVersionDateDesc(projectId);
+	}
+
+	public List<ProjectMetricsEntity> findAllByProjectId(String projectId) {
+		return this.pmr.findAllByProjectProjectId(projectId);
+	}
+
+	public List<ProjectMetricsEntity> findTop1ByProjectProjectIdOrderByVersionDateDesc(String projectId) {
+		return this.pmr.findTop1ByProjectProjectIdOrderByVersionDateDesc(projectId);
 	}
 }

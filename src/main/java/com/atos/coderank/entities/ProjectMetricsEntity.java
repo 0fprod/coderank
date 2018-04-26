@@ -139,6 +139,9 @@ public class ProjectMetricsEntity {
 	@Transient
 	private Map<String, List<String>> domains;
 
+	@Transient
+	private Map<String, String> serializedProject;
+	
 	public ProjectMetricsEntity() {
 		// Initialize domain with metricKeys
 		this.domains = new HashMap<>();
@@ -375,7 +378,7 @@ public class ProjectMetricsEntity {
 		return issMajorViolations;
 	}
 
-	public void setIssMajorIssues(Integer issMajorViolations) {
+	public void setIssMajorViolations(Integer issMajorViolations) {
 		this.issMajorViolations = issMajorViolations;
 	}
 
@@ -486,5 +489,19 @@ public class ProjectMetricsEntity {
 	public Map<String, List<String>> getDomains() {
 		return domains;
 	}
+
+	public void setDomains(Map<String, List<String>> domains) {
+		this.domains = domains;
+	}
+
+	public Map<String, String> getSerializedProject() {
+		return serializedProject;
+	}
+
+	public void setSerializedProject(Map<String, String> serializedProject) {
+		this.serializedProject = serializedProject;
+	}
+
+	
 
 }

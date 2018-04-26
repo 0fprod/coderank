@@ -268,7 +268,7 @@ public class SonarUtils {
 					pme.setIssMinorViolations(jsonMetrics.getInt(VALUE));
 					break;
 				case "major_violations":
-					pme.setIssMajorIssues(jsonMetrics.getInt(VALUE));
+					pme.setIssMajorViolations(jsonMetrics.getInt(VALUE));
 					break;
 				case "duplicated_lines": // Duplication
 					pme.setDupDuplicatedLines(jsonMetrics.getInt(VALUE));

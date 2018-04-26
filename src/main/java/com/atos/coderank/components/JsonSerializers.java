@@ -75,7 +75,7 @@ public class JsonSerializers {
 
 		return list;
 	}
-	
+
 	/**
 	 * Serializes a BadgeEntity from a given ProjectEntity
 	 * 

@@ -80,7 +80,7 @@ public class ProjectService {
 			saved.setBadges(this.pc.calcBadges());
 
 			// Set ranking and badges
-			this.rs.updateRanking(saved);
+			this.rs.insertIntoRanking(saved);
 			this.bs.updateBadges(saved);
 
 		} else {

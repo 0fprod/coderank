@@ -17,4 +17,12 @@ public interface ProjectMetricsRepository extends JpaRepository<ProjectMetricsEn
 
 	@Query(value = "SELECT * FROM metrics q1 WHERE version_date = (SELECT MAX(q2.version_date) FROM metrics q2 WHERE q2.project_id = :pid)", nativeQuery = true)
 	abstract ProjectMetricsEntity findMostRecentByProjectId(@Param("pid") String projectId);
+
+	abstract List<ProjectMetricsEntity> findAllByProjectProjectId(String projectId);
+	
+	abstract ProjectMetricsEntity findByMetricsId(Long id);
+	
+	abstract List<ProjectMetricsEntity> findTop1ByProjectProjectIdOrderByVersionDateDesc(String projectId);
+	
+	abstract List<ProjectMetricsEntity> findTop10ByProjectProjectIdOrderByVersionDateDesc(String projectId);
 }

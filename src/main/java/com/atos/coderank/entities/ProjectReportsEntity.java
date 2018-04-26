@@ -1,6 +1,5 @@
 package com.atos.coderank.entities;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -24,6 +23,9 @@ public class ProjectReportsEntity {
 	@SequenceGenerator(name = "SQ_REPORTS", sequenceName = "SQ_REPORTS", allocationSize = 1)
 	@Column(name = "REPORT_ID")
 	private Long reportId;
+
+	@Column(name = "METRICS_ID")
+	private Long metricsId;
 
 	@Column(name = "NAME")
 	private String name;
@@ -50,12 +52,10 @@ public class ProjectReportsEntity {
 		// Comment Required by sonarlint
 	}
 
-
 	@Override
 	public String toString() {
-		return "ProjectReportsEntity [reportId=" + reportId + ", name=" + name + ", document="
-				+ Arrays.toString(document) + ", createddate=" + createdDate + ", method=" + method + ", format="
-				+ format + "]";
+		return "ProjectReportsEntity [reportId=" + reportId + ", metricsId=" + metricsId + ", name=" + name
+				+ ", createdDate=" + createdDate + ", method=" + method + ", format=" + format + "]";
 	}
 
 	public Long getReportId() {
@@ -64,6 +64,14 @@ public class ProjectReportsEntity {
 
 	public void setReportId(Long reportId) {
 		this.reportId = reportId;
+	}
+
+	public Long getMetricsId() {
+		return metricsId;
+	}
+
+	public void setMetricsId(Long metricsId) {
+		this.metricsId = metricsId;
 	}
 
 	public String getName() {
@@ -82,12 +90,12 @@ public class ProjectReportsEntity {
 		this.document = document;
 	}
 
-	public Date getCreateddate() {
+	public Date getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreateddate(Date createddate) {
-		this.createdDate = createddate;
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 
 	public String getMethod() {
