@@ -166,7 +166,7 @@ public class ProjectMetricsEntity {
 
 	private void initSize() {
 		List<String> list = new ArrayList<>(
-				Arrays.asList("classes", ",functions", "directories", "files", "lines", "ncloc"));
+				Arrays.asList("classes", "functions", "directories", "files", "lines", "ncloc"));
 		this.domains.put("size", list);
 	}
 

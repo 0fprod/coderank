@@ -2,6 +2,8 @@ package com.atos.coderank.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,10 +18,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.atos.coderank.components.PdfGenerator;
+import com.atos.coderank.components.UtilsComponent;
 import com.atos.coderank.components.XlsGenerator;
 import com.atos.coderank.entities.ProjectMetricsEntity;
 import com.atos.coderank.entities.ProjectReportsEntity;
@@ -49,13 +53,19 @@ public class FileController {
 	@Autowired
 	@Qualifier("projectService")
 	private ProjectService ps;
-	
+
 	@Autowired
 	@Qualifier("projectReportsService")
 	private ProjectReportsService prs;
 	
+	@Autowired
+	@Qualifier("utilsComponent")
+	private UtilsComponent uc;
+	
 	/**
-	 * According to the recieved params this functions generates a file and returns an URL to download it
+	 * Example url for metrics : serverip/api/private/files/getlink?type=metric&method=download&format=xls&historic=0&metricsId=1&metricKeys=size,lines
+	 * Example url for reports : serverip/api/private/files?type=metric&method=download&format=xls&historic=0&projectId=1&metricKeys=size,lines
+	 * According to the recieved params, this functions generates a file and returns the download link
 	 * Generated files will be composed by projectid_versiondate.format
 	 * Possible queryParams:
 	 * type = metric,report
@@ -68,20 +78,21 @@ public class FileController {
 	 * @param req
 	 * @return
 	 */
+	@GetMapping("/getlink")
 	public ResponseEntity<String> generateURL(HttpServletRequest req){	
 		String format = req.getParameter(QUERY_CONSTANTS_FORMAT);
 		String type = req.getParameter(QUERY_CONSTANTS_TYPE);
-		String method = req.getParameter(QUERY_CONSTANTS_METRICID);
-		String metricsId = req.getParameter(QUERY_CONSTANTS_METHOD);
+		String method = req.getParameter(QUERY_CONSTANTS_METHOD);
+		String metricId = req.getParameter(QUERY_CONSTANTS_METRICID);
 		String metricKeys = req.getParameter(QUERY_CONSTANTS_METRICKEYS);
 		String projectId = req.getParameter(QUERY_CONSTANTS_PROJECTID);
-		boolean historic = req.getParameter(QUERY_CONSTANTS_HISTORIC).equalsIgnoreCase("0");
+		boolean historic = req.getParameter(QUERY_CONSTANTS_HISTORIC).equalsIgnoreCase("1");
 	
 		List<ProjectMetricsEntity> pmes = new ArrayList<>();
 
 		if (type.equalsIgnoreCase("metric")) {
 			// metrics by id
-			ProjectMetricsEntity pme = this.pms.findByMetricsId(Long.parseLong(metricsId));
+			ProjectMetricsEntity pme = this.pms.findByMetricsId(Long.parseLong(metricId));
 			if (pme != null)
 				pmes.add(pme);
 		} else if (type.equalsIgnoreCase("report") && !historic) {
@@ -93,12 +104,12 @@ public class FileController {
 		}
 			
 		File generatedFile = generateFiles(format, metricKeys, pmes);
-		String downloadLink = "";
+		String downloadLink = "-";
 		HttpStatus status = HttpStatus.OK;
 		
 		if (generatedFile != null) {
-			downloadLink = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + "/download?filename=" + generatedFile.getName() + "&format=" + format;
-			//TODO save the report
+			downloadLink = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + "/download?filename=" + generatedFile.getName();
+	
 			ProjectReportsEntity pre = new ProjectReportsEntity();
 			pre.setCreatedDate(new Date());
 			pre.setFormat(format);
@@ -123,16 +134,21 @@ public class FileController {
 	/**
 	 * According to the recieved params this function will return a file
 	 * Possible queryParams:
-	 * method = email,download
-	 * type = metric,report
 	 * filename = str
 	 * 
 	 * @param req
 	 * @return
 	 */
+	@GetMapping("/download")
 	public FileSystemResource downloadFile(HttpServletRequest req) {
-		
-		return null;
+		String filename = req.getParameter("filename");
+		File f = null;
+		try {
+			f = new File(BASE_PATH + URLDecoder.decode(filename, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			LOG.error("Erro while decoding -> " + e.getMessage());
+		}
+		return new FileSystemResource(f);
 	}
 	
 	/**
@@ -140,28 +156,23 @@ public class FileController {
 	 * @param format
 	 * @param metricKeys
 	 * @param pme
-	 * @param historic
 	 * @return
 	 */
-	private File generateFiles(String format, String metricKeys, List<ProjectMetricsEntity> pmes) {	
-		File dir = new File(BASE_PATH);
+	private File generateFiles(String format, String metricKeys, List<ProjectMetricsEntity> pmes) {			 
+		// If pmes.size > 1 means that it requieres historic evolution
+		List<ProjectMetricsEntity> filteredMetrics = this.uc.filterMetrics(metricKeys, pmes);
 		
-		if(!dir.exists())
-			dir.mkdirs();
+		String filename = filteredMetrics.get(0).getProject().getName() + new Date().getTime();
 		
-		//TODO metricKeys is a CSV, create the file with ONLY the metricKeys given
-		
-		String filename = "";
-		
-		switch (format) {
+		switch (format.toUpperCase().trim()) {
 		case "PDF":
 			filename += ".pdf";
-			new PdfGenerator(BASE_PATH + filename); //TODO pass pmes
+			new PdfGenerator(BASE_PATH + filename, filteredMetrics); 
 			break;
 	    case "XLSX":
 		case "XLS":
 			filename += ".xlsx";
-			new XlsGenerator(BASE_PATH + filename); //TODO pass pmes
+			new XlsGenerator(BASE_PATH + filename, filteredMetrics);
 			break;
 		default:
 			LOG.warn("Unsupported file format " + format);
@@ -174,19 +185,8 @@ public class FileController {
 		return null;
 	}
 	
-	/**
-	 * Generate a ZIP file with the list given and returns its filename
-	 * @param format
-	 * @param metricKeys
-	 * @param pme
-	 * @param historic
-	 * @return
-	 */
-	private String generateZip(String format, String metricKeys, List<ProjectMetricsEntity> pme, boolean historic) {
-		File dir = new File(BASE_PATH);
-		if(!dir.exists())
-			dir.mkdirs();
-		
-		return "";
+	
+	private void generateZip() {
+		// TODO needs to be implemented			
 	}
 }
