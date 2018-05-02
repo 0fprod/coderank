@@ -25,6 +25,10 @@ public class RankingService {
 		return this.rr.findTop10ByOrderByCalificationDesc();
 	}
 
+	/**
+	 * Get the top 10 projects and insert the given on in order
+	 * @param project
+	 */
 	public void insertIntoRanking(ProjectEntity project) {
 		List<RankingEntity> currentRanking = this.rr.findTop10ByOrderByCalificationDesc();
 
@@ -37,24 +41,30 @@ public class RankingService {
 		}
 
 		RankingEntity re = project.getRanking();
-		boolean inserted = false;
-		// Insertion in order
-		for (int i = 0; i < currentRanking.size(); i++) {
 
-			if (!inserted && re.getCalification() < currentRanking.get(i).getCalification()) {
-				re.setPosition(i);
-				inserted = true;
-				re.setProject(project);
-				this.saveOrUpdate(re);
-				continue;
+		if (currentRanking.isEmpty()) {
+			re.setPosition(1);
+			re.setProject(project);
+			this.saveOrUpdate(re);
+		} else {
+
+			for (int i = 0; i < currentRanking.size(); i++) {
+				if (re.getCalification() > currentRanking.get(i).getCalification()) {
+					re.setPosition(i + 1);	
+					re.setProject(project);
+					this.saveOrUpdate(re);
+
+					for (int k = i; k < currentRanking.size(); k++) {
+						// TODO send an email to the SQM from currentRanking.getProject() saying that his position has changed
+						// TODO What happens if the position exceeds the top10
+						currentRanking.get(k).setPosition(currentRanking.get(k).getPosition() + 1);
+						this.saveOrUpdate(currentRanking.get(k));
+					}
+
+					break;
+				}
 			}
 
-			// Move everyone +1 position
-			if (inserted) {
-				currentRanking.get(i).setPosition(currentRanking.get(i).getPosition() + 1);
-				//TODO send an email to the SQM from currentRanking.getProject() saying that his position has changed
-				this.saveOrUpdate(currentRanking.get(i));
-			}
 		}
 
 	}

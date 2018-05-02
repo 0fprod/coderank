@@ -1,6 +1,7 @@
 package com.atos.coderank.entities;
 
 import java.util.Date;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "REPORTS")
@@ -42,11 +46,15 @@ public class ProjectReportsEntity {
 	@Column(name = "FORMAT")
 	private String format;
 
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	private ProjectEntity project;
 
 	@OneToOne(mappedBy = "report", cascade = CascadeType.ALL)
 	private ReportNotificationEntity notification;
+	
+	@Transient
+	private Map<String, String> serializedProject;
 
 	public ProjectReportsEntity() {
 		// Comment Required by sonarlint
@@ -128,6 +136,14 @@ public class ProjectReportsEntity {
 
 	public void setNotification(ReportNotificationEntity notification) {
 		this.notification = notification;
+	}
+
+	public Map<String, String> getSerializedProject() {
+		return serializedProject;
+	}
+
+	public void setSerializedProject(Map<String, String> serializedProject) {
+		this.serializedProject = serializedProject;
 	}
 
 }

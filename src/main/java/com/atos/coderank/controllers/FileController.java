@@ -116,7 +116,7 @@ public class FileController {
 			pre.setMethod(method);
 			pre.setName(generatedFile.getName());
 			pre.setMetricsId(pmes.get(0).getMetricsId());
-			pre.setProject(this.ps.findById(projectId));
+			pre.setProject(pmes.get(0).getProject());
 			//TODO pre.setNotification(notification);
 			try {
 				pre.setDocument(Files.readAllBytes(generatedFile.toPath()));

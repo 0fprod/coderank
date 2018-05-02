@@ -12,28 +12,34 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 public class RequestInterceptor extends HandlerInterceptorAdapter {
 
 	private static final Log LOG = LogFactory.getLog(RequestInterceptor.class);
-	
+
 	/**
 	 * Se ejecuta antes de entrar en los controller
 	 */
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+			throws Exception {
+
 		LOG.info(" -- PreHandle request");
+
+		if (request.getHeader("Authorization") == null) {
+			LOG.error("Authorization token not found.");
+			return false;
+		}
+
 		LOG.info("Endpoint --> " + request.getRequestURL().toString());
 		return true;
 	}
-	
+
 	/**
 	 * Se ejecuta antes del return de los controller
 	 */
 	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-		
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+			throws Exception {
+
 		LOG.info(" -- afterCompletion request");
-		
+
 	}
 
-
-	
 }

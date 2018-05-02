@@ -55,6 +55,25 @@ public class JsonSerializers {
 	}
 
 	/**
+	 * Serializes ProjectEntity from a given ProjectEntity
+	 * 
+	 * @param g
+	 * @return Map(id, key, url, name)
+	 */
+	public Map<String, String> projectEntitySerializer(ProjectEntity p) {
+		Map<String, String> map = new HashMap<>();
+
+	
+		map.put("id", p.getProjectId());
+		map.put("key", p.getKey());
+		map.put("url", p.getUrl());
+		map.put("name", p.getName());
+		
+
+		return map;
+	}
+	
+	/**
 	 * Serializes a BadgeEntity from a given UserEntity
 	 * 
 	 * @param badges

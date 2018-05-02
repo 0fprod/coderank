@@ -97,7 +97,7 @@ public class ProjectService {
 		if (project.getSerializedGroup() != null) {
 			GroupEntity group = this.gs.findByGroupId(Long.parseLong(project.getSerializedGroup().get("groupId")));
 			saved.setGroup(group);
-			group.setProject(project);
+			group.setProject(saved);
 			this.gs.saveOrUpdate(group);
 		}
 
