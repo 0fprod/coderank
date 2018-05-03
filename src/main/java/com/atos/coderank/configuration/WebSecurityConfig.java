@@ -1,5 +1,8 @@
 package com.atos.coderank.configuration;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -37,9 +40,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 			.addFilter(new JWTAuthenticationFilter(authenticationManager()))
 			.addFilter(new JWTAuthorizationFilter(authenticationManager()))
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+			.headers().cacheControl();
+		
 	}
-
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
@@ -47,8 +53,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
-		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(new ArrayList<>(Arrays.asList("*")));
+        configuration.setAllowedMethods(new ArrayList<>(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH")));
+        configuration.setAllowedHeaders(new ArrayList<>(Arrays.asList("Authorization", "Cache-Control", "Content-Type")));
+        configuration.setAllowCredentials(true);
+        // setAllowCredentials(true) is important, otherwise:
+        // The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
+        // setAllowedHeaders is important! Without it, OPTIONS preflight request
+        // will fail with 403 Invalid CORS request
+        // configuration.applyPermitDefaultValues();
+        configuration.addExposedHeader("Authorization");
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		
 		return source;
 	}
 }

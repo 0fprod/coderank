@@ -12,6 +12,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +28,8 @@ import io.jsonwebtoken.Jwts;
  */
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter{
 
+	private static final Log LOG = LogFactory.getLog(JWTAuthorizationFilter.class);
+	
 	public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
 		super(authenticationManager);
 	}
@@ -34,6 +38,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter{
 	protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain)
 			throws IOException, ServletException {
 
+		LOG.info("Internal doFilter");
+		
 		String header = req.getHeader(HEADER_STRING);
 		
 		if(header == null || !header.startsWith(TOKEN_PREFIX)) {
@@ -48,6 +54,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter{
 	
 	private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest req) {
 
+		LOG.info("Authorization.. ");
 		String token = req.getHeader(HEADER_STRING);
 		if(token != null) {
 			//parse the token
@@ -57,10 +64,12 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter{
 							.getBody()
 							.getSubject();
 			if(user != null) {
+				LOG.info("OK!");
 				return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
 			}
 			
 		}
+		LOG.info("Failed.");
 		return null;
 	}
 	

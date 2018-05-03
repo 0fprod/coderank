@@ -14,6 +14,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,44 +29,49 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 /**
- * Following: https://auth0.com/blog/implementing-jwt-authentication-on-spring-boot/?utm_source=medium&utm_medium=sc&utm_campaign=spring_boot_api
+ * Following:
+ * https://auth0.com/blog/implementing-jwt-authentication-on-spring-boot/?utm_source=medium&utm_medium=sc&utm_campaign=spring_boot_api
+ * 
  * @author A679647
  *
  */
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
+	private static final Log LOG = LogFactory.getLog(JWTAuthenticationFilter.class);
+
 	private AuthenticationManager authenticationManager;
-	
-	public JWTAuthenticationFilter (AuthenticationManager authenticationManager) {
+
+	public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
 	}
 
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-
+		LOG.info("Attemp authentication");
+		
 		try {
 			UserEntity creds = new ObjectMapper().readValue(request.getInputStream(), UserEntity.class);
-			UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(creds.getDas(), creds.getPassword(), new ArrayList<>());
+			UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(creds.getDas(),
+					creds.getPassword(), new ArrayList<>());
 			return this.authenticationManager.authenticate(upat);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		
+
 	}
 
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
-	
+		LOG.info("Successfull authentication");
+
 		User usrDetail = (User) authResult.getPrincipal();
 		Date todayPlusExpirationTime = new Date(System.currentTimeMillis() + EXPIRATION_TIME);
-		String token = Jwts.builder()
-				.setSubject(usrDetail.getUsername())
-				.setExpiration(todayPlusExpirationTime)
-				.signWith(SignatureAlgorithm.HS512, SECRET.getBytes())
-				.compact();
+		String token = Jwts.builder().setSubject(usrDetail.getUsername()).setExpiration(todayPlusExpirationTime)
+				.signWith(SignatureAlgorithm.HS512, SECRET.getBytes()).compact();
+		
 		response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+		
 	}
-	
-	
+
 }
